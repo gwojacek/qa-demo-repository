@@ -1,19 +1,54 @@
-# docker-compose.yml
+version: "3.8"
 services:
-  selenium:
+  # ——— headless chrome ———
+  selenium-chrome:
     image: selenium/standalone-chrome:latest
-    container_name: selenium
+    container_name: selenium-chrome
     ports:
-      - "4444:4444"
-    shm_size: "2g"
+      - "4444:4444"   # WebDriver
+
+  # ——— debug chrome (VNC) ———
+  selenium-chrome-debug:
+    image: selenium/standalone-chrome-debug:latest
+    container_name: selenium-chrome-debug
+    environment:
+      VNC_NO_PASSWORD: "1"
+      SCREEN_WIDTH: 2560
+      SCREEN_HEIGHT: 1440
+      SCREEN_DEPTH: 24
+    ports:
+      - "4445:4444"   # WebDriver
+      - "5900:5900"   # VNC
+
+  # ——— headless firefox ———
+  selenium-firefox:
+    image: selenium/standalone-firefox:latest
+    container_name: selenium-firefox
+    ports:
+      - "4446:4444"   # WebDriver
+
+  # ——— debug firefox (VNC) ———
+  selenium-firefox-debug:
+    image: selenium/standalone-firefox-debug:latest
+    container_name: selenium-firefox-debug
+    environment:
+      VNC_NO_PASSWORD: "1"
+      SCREEN_WIDTH: 2560
+      SCREEN_HEIGHT: 1440
+      SCREEN_DEPTH: 24
+    ports:
+      - "4447:4444"   # WebDriver
+      - "5901:5900"   # VNC
 
   test-runner:
     build: .
     depends_on:
-      - selenium
+      - selenium-chrome
+      - selenium-chrome-debug
+      - selenium-firefox
+      - selenium-firefox-debug
     environment:
-      SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
-      PYTHONPATH: /app     # ✅ Add this line
+      PYTHONPATH: /app
     volumes:
       - .:/app
     working_dir: /app

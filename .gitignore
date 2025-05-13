@@ -1,2 +1,4 @@
 *.venv/
 tests/artifacts/
+.idea
+.vcs
