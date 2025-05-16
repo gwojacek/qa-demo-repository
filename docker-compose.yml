@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   # ——— headless chrome ———
   selenium-chrome:
@@ -26,6 +25,8 @@ services:
     container_name: selenium-firefox
     ports:
       - "4446:4444"   # WebDriver
+    environment:
+      - SE_OPTS=--max-sessions 16      # allow up to 4 parallel sessions
 
   # ——— debug firefox (VNC) ———
   selenium-firefox-debug:

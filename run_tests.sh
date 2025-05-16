@@ -9,6 +9,7 @@ MARKER=""
 WORKERS="auto"
 HEADLESS=true
 VNC=false
+VNC_PID=""
 
 usage(){ cat <<EOF >&2
 Usage: $0 [-b chrome|firefox] [-m <marker>] [-n <workers>] [-H] [-v]
@@ -30,6 +31,16 @@ while getopts "b:m:n:Hv" opt; do
     *) usage ;;
   esac
 done
+
+# Kill VNC viewer on exit
+cleanup() {
+  echo "🛑 Cleaning up…"
+  if [[ -n "$VNC_PID" && -n "$(ps -o pid= -p $VNC_PID 2>/dev/null)" ]]; then
+    echo "🧼 Closing TigerVNC viewer (PID $VNC_PID)…"
+    kill "$VNC_PID" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT INT TERM
 
 echo "🧹 Cleaning up any old grid…"
 docker compose down --remove-orphans
@@ -63,7 +74,6 @@ until curl -sf "http://localhost:$WD_PORT/wd/hub/status" >/dev/null; do
 done
 echo " ✅"
 
-
 if $VNC; then
   printf "⏳ Waiting for VNC on localhost:$VNC_PORT…"
   until nc -z localhost $VNC_PORT; do
@@ -72,7 +82,6 @@ if $VNC; then
   done
   echo " ✅ VNC ready!"
 
-  # give X session a moment to finish booting
   sleep 2
 
   if [ -n "${DISPLAY-}" ]; then
@@ -83,6 +92,7 @@ if $VNC; then
       -Shared \
       localhost:$VNC_PORT \
       >/dev/null 2>&1 &
+    VNC_PID=$!
   fi
 fi
 
@@ -114,10 +124,9 @@ docker compose run --rm --no-deps \
 
 EXITCODE=${PIPESTATUS[0]}
 
- echo "🧹 Tearing down grid…"
- docker compose down
+echo "🧹 Tearing down grid…"
+docker compose down
 
- echo
- echo "🏁 Report: file://$(realpath tests/artifacts/report.html)"
- exit $EXITCODE
-
+echo
+echo "🏁 Report: file://$(realpath tests/artifacts/report.html)"
+exit $EXITCODE
