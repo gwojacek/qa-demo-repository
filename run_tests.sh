@@ -1,10 +1,11 @@
+# run_tests.sh
 #!/usr/bin/env bash
 set -euo pipefail
 
 export LOCAL_UID=$(id -u)
 export LOCAL_GID=$(id -g)
 
-BROWSER="chrome"
+BROWSER="chrome"   # supports: chrome | opera
 MARKER=""
 WORKERS="auto"
 HEADLESS=true
@@ -12,8 +13,8 @@ VNC=false
 VNC_PID=""
 
 usage(){ cat <<EOF >&2
-Usage: $0 [-b chrome|firefox] [-m <marker>] [-n <workers>] [-H] [-v]
-  -b    browser (chrome|firefox), default=chrome
+Usage: $0 [-b chrome|opera] [-m <marker>] [-n <workers>] [-H] [-v]
+  -b    browser (chrome|opera), default=chrome
   -m    pytest marker
   -n    xdist workers, default=auto
   -H    disable headless
@@ -32,27 +33,25 @@ while getopts "b:m:n:Hv" opt; do
   esac
 done
 
-# Kill VNC viewer on exit
 cleanup() {
   echo "🛑 Cleaning up…"
   if [[ -n "$VNC_PID" && -n "$(ps -o pid= -p $VNC_PID 2>/dev/null)" ]]; then
     echo "🧼 Closing TigerVNC viewer (PID $VNC_PID)…"
-    kill "$VNC_PID" 2>/dev/null || true
+    kill "$VNC_PID" || true
   fi
 }
 trap cleanup EXIT INT TERM
 
-echo "🧹 Cleaning up any old grid…"
+echo "🧹 Shutting down any old grid…"
 docker compose down --remove-orphans
 
-# pick the right service + ports
-if [[ $BROWSER == "firefox" ]]; then
+if [[ $BROWSER == "opera" ]]; then
   if $VNC; then
-    SERVICE=selenium-firefox-debug; WD_PORT=4447; VNC_PORT=5901
-    SEL_URL="http://selenium-firefox-debug:4444/wd/hub"
+    SERVICE=selenium-opera-debug; WD_PORT=4449; VNC_PORT=5902
+    SEL_URL="http://selenium-opera-debug:4444/wd/hub"
   else
-    SERVICE=selenium-firefox;       WD_PORT=4446
-    SEL_URL="http://selenium-firefox:4444/wd/hub"
+    SERVICE=selenium-opera;       WD_PORT=4448
+    SEL_URL="http://selenium-opera:4444/wd/hub"
   fi
 else
   if $VNC; then
@@ -67,7 +66,7 @@ fi
 echo "🚀 Starting $SERVICE…"
 docker compose up -d "$SERVICE"
 
-echo -n "⏳ Connecting to WebDriver at localhost:$WD_PORT"
+echo -n "⏳ Waiting for WebDriver at localhost:$WD_PORT"
 until curl -sf "http://localhost:$WD_PORT/wd/hub/status" >/dev/null; do
   echo -n "."
   sleep 0.2
@@ -81,40 +80,33 @@ if $VNC; then
     sleep 0.2
   done
   echo " ✅ VNC ready!"
-
   sleep 2
-
   if [ -n "${DISPLAY-}" ]; then
     echo "🖼️ Launching TigerVNC viewer in fullscreen…"
-    vncviewer \
-      -SecurityTypes None \
-      -FullScreen \
-      -Shared \
-      localhost:$VNC_PORT \
-      >/dev/null 2>&1 &
+    vncviewer -SecurityTypes None -FullScreen -Shared localhost:$VNC_PORT >/dev/null 2>&1 &
     VNC_PID=$!
   fi
 fi
 
-echo "🧹 Cleaning old artifacts…"
+echo "🧹 Cleaning artifacts…"
 rm -rf tests/artifacts && mkdir -p tests/artifacts
 
-echo "📦 Building test-runner image…"
+echo "📦 Building test-runner…"
 docker compose build test-runner
 
-# assemble pytest args
 PYTEST_ARGS=(-v --color=yes)
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
 PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html)
 
-echo "🧪 Running pytest on '$BROWSER' (headless=$HEADLESS, VNC=$VNC)…"
+echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS)…"
 docker compose run --rm --no-deps \
   -e BROWSER="$BROWSER" \
   -e HEADLESS="$HEADLESS" \
   -e SELENIUM_REMOTE_URL="$SEL_URL" \
   --entrypoint pytest \
   test-runner \
-  "${PYTEST_ARGS[@]}" 2>&1 | sed -E '
+  "${PYTEST_ARGS[@]}" \
+| sed -E '
     s|file:///app/tests/artifacts/report.html|file://'"$PWD"'/tests/artifacts/report.html|;
     /^[[:space:]]*[0-9]+ workers /d;
     /scheduling tests via/d;
@@ -124,7 +116,7 @@ docker compose run --rm --no-deps \
 
 EXITCODE=${PIPESTATUS[0]}
 
-echo "🧹 Tearing down grid…"
+echo "🧹 Tearing down…"
 docker compose down
 
 echo

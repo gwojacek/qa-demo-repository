@@ -1,10 +1,10 @@
 import os
 import time
 from pathlib import Path
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
 def _make_screenshot_path(item):
@@ -38,26 +38,18 @@ def driver():
     remote = os.getenv("SELENIUM_REMOTE_URL")
     headless = os.getenv("HEADLESS", "true").lower() in ("1", "true", "yes")
 
-    if browser == "firefox":
-        opts = FirefoxOptions()
-        # start maximized so it's visible within the VNC desktop
-        opts.add_argument("--start-maximized")
-        if headless:
-            opts.add_argument("--headless")
-        opts.add_argument("--width=2560")
-        opts.add_argument("--height=1440")
-    else:
-        opts = ChromeOptions()
-        # start maximized so it's visible within the VNC desktop
-        opts.add_argument("--start-maximized")
-        if headless:
-            opts.add_argument("--headless=new")
-            opts.add_argument("--disable-dev-shm-usage")
-        opts.add_argument("--no-sandbox")
-        opts.add_argument("--window-size=2560,1440")
+    # Use ChromeOptions for both Chrome and Opera
+    opts = ChromeOptions()
+    if headless:
+        opts.add_argument("--headless=new")
+        opts.add_argument("--disable-dev-shm-usage")
+        # Opera-specific tweak for GPU
+        if browser == "opera":
+            opts.add_argument("--disable-gpu")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--window-size=2560,1440")
 
-    drv = webdriver.Remote(command_executor=remote, options=opts)
-    # ensure the viewport matches the container's screen
-    drv.set_window_size(2560, 1440)
-    yield drv
-    drv.quit()
+    driver = webdriver.Remote(command_executor=remote, options=opts)
+    driver.set_window_size(2560, 1440)
+    yield driver
+    driver.quit()

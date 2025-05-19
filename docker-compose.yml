@@ -1,12 +1,11 @@
+# docker-compose.yml
 services:
-  # ——— headless chrome ———
   selenium-chrome:
     image: selenium/standalone-chrome:latest
     container_name: selenium-chrome
     ports:
-      - "4444:4444"   # WebDriver
+      - "4444:4444"
 
-  # ——— debug chrome (VNC) ———
   selenium-chrome-debug:
     image: selenium/standalone-chrome-debug:latest
     container_name: selenium-chrome-debug
@@ -16,38 +15,41 @@ services:
       SCREEN_HEIGHT: 1440
       SCREEN_DEPTH: 24
     ports:
-      - "4445:4444"   # WebDriver
-      - "5900:5900"   # VNC
+      - "4445:4444"
+      - "5900:5900"
 
-  # ——— headless firefox ———
-  selenium-firefox:
-    image: selenium/standalone-firefox:latest
-    container_name: selenium-firefox
-    ports:
-      - "4446:4444"   # WebDriver
+  selenium-opera:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium-opera
+    volumes:
+      - ./tools/operadriver:/usr/local/bin/opera-driver
     environment:
-      - SE_OPTS=--max-sessions 16      # allow up to 4 parallel sessions
+      SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+    ports:
+      - "4448:4444"
 
-  # ——— debug firefox (VNC) ———
-  selenium-firefox-debug:
-    image: selenium/standalone-firefox-debug:latest
-    container_name: selenium-firefox-debug
+  selenium-opera-debug:
+    image: selenium/standalone-chrome-debug:latest
+    container_name: selenium-opera-debug
+    volumes:
+      - ./tools/operadriver:/usr/local/bin/opera-driver
     environment:
       VNC_NO_PASSWORD: "1"
       SCREEN_WIDTH: 2560
       SCREEN_HEIGHT: 1440
       SCREEN_DEPTH: 24
+      SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
     ports:
-      - "4447:4444"   # WebDriver
-      - "5901:5900"   # VNC
+      - "4449:4444"
+      - "5902:5900"
 
   test-runner:
     build: .
     depends_on:
       - selenium-chrome
       - selenium-chrome-debug
-      - selenium-firefox
-      - selenium-firefox-debug
+      - selenium-opera
+      - selenium-opera-debug
     environment:
       PYTHONPATH: /app
     volumes:
