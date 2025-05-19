@@ -2,3 +2,6 @@
 tests/artifacts/
 .idea
 .vcs
+# Python bytecode
+__pycache__/
+*.py[cod]

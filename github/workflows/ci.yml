@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'   # every day at midnight UTC
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      selenium-chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+
+      selenium-chrome-debug:
+        image: selenium/standalone-chrome-debug:latest
+        ports:
+          - 4445:4444
+          - 5900:5900
+
+      selenium-opera:
+        image: selenium/standalone-chrome:latest
+        volumes:
+          - ./tools/operadriver:/usr/local/bin/opera-driver
+        environment:
+          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+        ports:
+          - 4448:4444
+
+      selenium-opera-debug:
+        image: selenium/standalone-chrome-debug:latest
+        volumes:
+          - ./tools/operadriver:/usr/local/bin/opera-driver
+        environment:
+          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+        ports:
+          - 4449:4444
+          - 5902:5900
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Build test-runner image
+        run: docker-compose build test-runner
+
+      - name: Run UI Tests on Chrome
+        run: ./run_tests.sh -b chrome -m ui
+
+      - name: Run UI Tests on Opera
+        run: ./run_tests.sh -b opera -m ui
+
+      - name: Archive Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: ui-test-report
+          path: tests/artifacts/report.html
