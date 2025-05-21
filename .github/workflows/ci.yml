@@ -3,44 +3,33 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   schedule:
-    - cron: '0 0 * * *'   # every day at midnight UTC
+    - cron: '0 0 * * *'    # daily at midnight UTC
   workflow_dispatch:
     inputs:
       browser:
-        description: 'Which browser to test (all, chrome, opera)'
+        description: 'Which browser to test'
         required: false
         default: 'all'
         type: choice
-        options:
-          - all
-          - chrome
-          - opera
+        options: [all, chrome, opera]
 
 jobs:
-  ui-tests-chrome:
-    name: UI tests (Chrome)
+  ui-tests:
+    name: UI tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
-    # on push/cron always run; on manual only if browser == all or chrome
+    strategy:
+      matrix:
+        browser: [chrome, opera]
+    # run always on push/cron; on manual only if all or matching matrix.browser
     if: >
       github.event_name != 'workflow_dispatch'
       || github.event.inputs.browser == 'all'
-      || github.event.inputs.browser == 'chrome'
-    continue-on-error: false
-    services:
-      selenium-chrome:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-      selenium-chrome-debug:
-        image: selenium/standalone-chrome-debug:latest
-        ports:
-          - 4445:4444
-          - 5900:5900
+      || github.event.inputs.browser == matrix.browser
+
     steps:
-      - name: Check out code (skip git clean so operadriver stays)
+      - name: Checkout (keep operadriver)
         uses: actions/checkout@v4
         with:
           clean: false
@@ -50,64 +39,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build test-runner image
-        run: docker-compose build test-runner
+      - name: Run ${{ matrix.browser }} UI tests
+        run: ./run_tests.sh -b ${{ matrix.browser }} -m ui
 
-      - name: Run Chrome UI tests
-        run: ./run_tests.sh -b chrome -m ui
-
-      - name: Upload Chrome report
+      - name: Upload ${{ matrix.browser }} report
         uses: actions/upload-artifact@v4
         with:
-          name: ui-test-report-chrome
-          path: tests/artifacts/report.html
-
-  ui-tests-opera:
-    name: UI tests (Opera)
-    runs-on: ubuntu-latest
-    if: >
-      github.event_name != 'workflow_dispatch'
-      || github.event.inputs.browser == 'all'
-      || github.event.inputs.browser == 'opera'
-    continue-on-error: false
-    services:
-      selenium-opera:
-        image: selenium/standalone-chrome:latest
-        # mount your OperaDriver from the workspace
-        options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
-        env:
-          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-        ports:
-          - 4448:4444
-      selenium-opera-debug:
-        image: selenium/standalone-chrome-debug:latest
-        options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
-        env:
-          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-        ports:
-          - 4449:4444
-          - 5902:5900
-    steps:
-      - name: Check out code (skip git clean so operadriver stays)
-        uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Build test-runner image
-        run: docker-compose build test-runner
-
-      - name: Run Opera UI tests
-        run: ./run_tests.sh -b opera -m ui
-
-      - name: Upload Opera report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-report-opera
+          name: ui-test-report-${{ matrix.browser }}
           path: tests/artifacts/report.html
