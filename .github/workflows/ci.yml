@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml
 name: CI
 
 on:
@@ -5,49 +6,17 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * *'   # every day at midnight UTC
+    - cron: '0 0 * * *'   # every night at midnight UTC
 
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
-
-    services:
-      selenium-chrome:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-
-      selenium-chrome-debug:
-        image: selenium/standalone-chrome-debug:latest
-        ports:
-          - 4445:4444
-          - 5900:5900
-
-      selenium-opera:
-        image: selenium/standalone-chrome:latest
-        options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
-        env:
-          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-        ports:
-          - 4448:4444
-
-      selenium-opera-debug:
-        image: selenium/standalone-chrome-debug:latest
-        options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
-        env:
-          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-        ports:
-          - 4449:4444
-          - 5902:5900
-
+    # We need Docker Compose to bring up the Selenium nodes:
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false    # ← disable the git-clean so tools/operadriver stays in place
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Compose
+      - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
@@ -55,13 +24,31 @@ jobs:
       - name: Build test-runner image
         run: docker-compose build test-runner
 
+      - name: Start Selenium-Chrome
+        run: docker-compose up -d selenium-chrome
+
       - name: Run UI Tests on Chrome
         run: ./run_tests.sh -b chrome -m ui
+
+      - name: Tear down Chrome node
+        run: docker-compose down --remove-orphans
+
+      - name: Start Selenium-Opera
+        # We're using a community image that bundles Opera + OperaDriver
+        run: |
+          docker pull pczerkas/selenium-standalone-opera:latest
+          docker run -d \
+            --name selenium-opera \
+            -p 4448:4444 \
+            pczerkas/selenium-standalone-opera:latest
 
       - name: Run UI Tests on Opera
         run: ./run_tests.sh -b opera -m ui
 
-      - name: Archive Test Report
+      - name: Tear down Opera node
+        run: docker rm -f selenium-opera
+
+      - name: Archive HTML report
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-report
