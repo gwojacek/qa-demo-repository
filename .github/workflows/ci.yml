@@ -6,25 +6,16 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * *'   # every night at midnight UTC
+    - cron: '0 0 * * *'   # every day at midnight UTC
 
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
 
-    services:
-      selenium-chrome:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-
-      selenium-opera:
-        image: pczerkas/selenium-standalone-opera:latest
-        ports:
-          - 4448:4444
-
     steps:
       - uses: actions/checkout@v4
+        with:
+          clean: true
 
       - name: Install Docker Compose
         run: |
@@ -34,32 +25,15 @@ jobs:
       - name: Build test-runner image
         run: docker-compose build test-runner
 
-      - name: Start Selenium-Chrome
-        run: docker-compose up -d selenium-chrome
-
       - name: Run UI Tests on Chrome
         run: ./run_tests.sh -b chrome -m ui
         continue-on-error: true
-
-      - name: Tear down Chrome node
-        run: docker-compose down --remove-orphans
-
-      - name: Start Selenium-Opera
-        run: |
-          docker pull pczerkas/selenium-standalone-opera:latest
-          docker run -d \
-            --name selenium-opera \
-            -p 4448:4444 \
-            pczerkas/selenium-standalone-opera:latest
 
       - name: Run UI Tests on Opera
         run: ./run_tests.sh -b opera -m ui
         continue-on-error: true
 
-      - name: Tear down Opera node
-        run: docker rm -f selenium-opera
-
-      - name: Archive HTML report
+      - name: Archive Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
