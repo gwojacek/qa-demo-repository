@@ -25,9 +25,8 @@ jobs:
 
       selenium-opera:
         image: selenium/standalone-chrome:latest
-        # mount the OperaDriver binary
         options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
+          -v ${{ runner.temp }}/operadriver:/usr/local/bin/opera-driver
         env:
           SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
         ports:
@@ -36,13 +35,12 @@ jobs:
       selenium-opera-debug:
         image: selenium/standalone-chrome-debug:latest
         options: >-
-          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
+          -v ${{ runner.temp }}/operadriver:/usr/local/bin/opera-driver
         env:
           SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
         ports:
           - 4449:4444
           - 5902:5900
-
 
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +53,7 @@ jobs:
       - name: Copy OperaDriver to runner temp
         run: |
           mkdir -p "$RUNNER_TEMP/operadriver"
-          cp tools/operadriver "$RUNNER_TEMP/operadriver/" 
+          cp tools/operadriver "$RUNNER_TEMP/operadriver/"
 
       - name: Build test-runner image
         run: docker-compose build test-runner
@@ -71,4 +69,3 @@ jobs:
         with:
           name: ui-test-report
           path: tests/artifacts/report.html
-          clean: false
