@@ -1,61 +1,71 @@
+# .github/workflows/ci.yml
 name: CI
 
 on:
   push:
     branches: [ master ]
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *'        # every day at midnight UTC
+  workflow_dispatch:          # manual trigger
     inputs:
       browser:
-        description: 'Which browser to run tests on'
+        description: 'Which browser to run UI tests on'
         required: false
         default: 'all'
         type: choice
-        options: [ all, chrome, opera ]
+        options:
+          - all
+          - chrome
+          - opera
 
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
 
-    # only include the matrix entries you want
+    # run once per browser
     strategy:
       matrix:
         browser: [ chrome, opera ]
       fail-fast: false
 
-    if: |
+    # if manually dispatched, only run the selected browser (or 'all')
+    if: >
       github.event_name != 'workflow_dispatch' ||
       github.event.inputs.browser == 'all' ||
       github.event.inputs.browser == matrix.browser
 
     services:
       selenium:
-        # pick the right image + ports based on matrix.browser
-        image: selenium/standalone-${{ matrix.browser }}${{ matrix.browser == 'chrome' && '' || '-debug:latest' }}
-        # (you can expand these into a small if/else or a second matrix)
-        ports: ${{ matrix.browser == 'chrome' && '[4444:4444]' || '[4448:4444]' }}
-
-        # Opera needs the driver mount + env
-        options: ${{ matrix.browser == 'opera' && '-v ${{github.workspace}}/tools/operadriver:/usr/local/bin/opera-driver' || '' }}
+        # always use the Chrome standalone image
+        image: selenium/standalone-chrome:latest
+        # only mount the OperaDriver when matrix.browser=opera
+        options: ${{ matrix.browser == 'opera' && format('-v {0}/tools/operadriver:/usr/local/bin/opera-driver', github.workspace) || '' }}
+        # always set this var—Chrome will ignore it if unused
         env:
-          ${{ matrix.browser == 'opera' && 'SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver' || '' }}
+          SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+        ports:
+          - 4444:4444
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build test-runner
+      - name: Build test-runner image
         run: docker-compose build test-runner
 
-      - name: Run UI Tests (${{ matrix.browser }})
-        run: ./run_tests.sh -b ${{ matrix.browser }} -m ui
+      - name: Run UI tests (${{ matrix.browser }})
+        env:
+          BROWSER: ${{ matrix.browser }}
+          # point your tests at the "selenium" service
+          SELENIUM_REMOTE_URL: http://selenium:4444/wd/hub
+        run: ./run_tests.sh -b $BROWSER -m ui
 
-      - name: Upload report (${{ matrix.browser }})
+      - name: Publish UI test report (${{ matrix.browser }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
