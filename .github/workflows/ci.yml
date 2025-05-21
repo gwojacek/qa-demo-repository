@@ -25,22 +25,24 @@ jobs:
 
       selenium-opera:
         image: selenium/standalone-chrome:latest
-        volumes:
-          - ./tools/operadriver:/usr/local/bin/opera-driver
-        environment:
+        # mount the OperaDriver binary
+        options: >-
+          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
+        env:
           SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
         ports:
           - 4448:4444
 
       selenium-opera-debug:
         image: selenium/standalone-chrome-debug:latest
-        volumes:
-          - ./tools/operadriver:/usr/local/bin/opera-driver
-        environment:
+        options: >-
+          -v ${{ github.workspace }}/tools/operadriver:/usr/local/bin/opera-driver
+        env:
           SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
         ports:
           - 4449:4444
           - 5902:5900
+
 
     steps:
       - uses: actions/checkout@v4
