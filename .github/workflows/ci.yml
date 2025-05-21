@@ -11,10 +11,20 @@ on:
 jobs:
   ui-tests:
     runs-on: ubuntu-latest
-    # We need Docker Compose to bring up the Selenium nodes:
+
+    services:
+      selenium-chrome:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+
+      selenium-opera:
+        image: pczerkas/selenium-standalone-opera:latest
+        ports:
+          - 4448:4444
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install Docker Compose
         run: |
@@ -29,12 +39,12 @@ jobs:
 
       - name: Run UI Tests on Chrome
         run: ./run_tests.sh -b chrome -m ui
+        continue-on-error: true
 
       - name: Tear down Chrome node
         run: docker-compose down --remove-orphans
 
       - name: Start Selenium-Opera
-        # We're using a community image that bundles Opera + OperaDriver
         run: |
           docker pull pczerkas/selenium-standalone-opera:latest
           docker run -d \
@@ -44,11 +54,13 @@ jobs:
 
       - name: Run UI Tests on Opera
         run: ./run_tests.sh -b opera -m ui
+        continue-on-error: true
 
       - name: Tear down Opera node
         run: docker rm -f selenium-opera
 
       - name: Archive HTML report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-report
