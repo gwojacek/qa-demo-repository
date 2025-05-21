@@ -52,6 +52,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
+      - name: Copy OperaDriver to runner temp
+        run: |
+          mkdir -p "$RUNNER_TEMP/operadriver"
+          cp tools/operadriver "$RUNNER_TEMP/operadriver/" 
+
       - name: Build test-runner image
         run: docker-compose build test-runner
 
@@ -66,3 +71,4 @@ jobs:
         with:
           name: ui-test-report
           path: tests/artifacts/report.html
+          clean: false
