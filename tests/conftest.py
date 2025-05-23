@@ -7,12 +7,14 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from pytest_html import extras  # important for extras.html()
 
+
 def _make_screenshot_path(item):
     ts = time.strftime("%Y%m%d-%H%M%S")
     safe = item.nodeid.replace("::", "_").replace("/", "_")
     path = Path(item.config.rootpath, "tests", "artifacts", f"{ts}_{safe}.png")
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
+
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -32,9 +34,11 @@ def pytest_runtest_makereport(item, call):
 
         # Embed manually clickable <img> tag
         html_snippet = (
-            f'<div><img src="{rel_path}" alt="screenshot" style="width:304px;height:228px;" '
-            f'onclick="window.open(this.src)" align="right"/></div>'
+            f'<div><img src="{rel_path}" alt="screenshot" '
+            f'style="width:600px; height:auto; display:block; float:right; margin:10px;" '
+            f'onclick="window.open(this.src)"/></div>'
         )
+
         extra = getattr(report, "extra", [])
         extra.append(extras.html(html_snippet))
         report.extras = extra
