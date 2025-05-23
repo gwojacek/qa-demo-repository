@@ -36,24 +36,23 @@ jobs:
       - name: Run Chrome UI tests
         run: ./run_tests.sh -b chrome -m ui
 
-      - name: Upload Chrome report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-report-chrome
-          path: tests/artifacts/report.html
+      - name: Prepare report for GitHub Pages (Chrome)
+        run: |
+          mkdir -p out/chrome
+          cp tests/artifacts/report.html out/chrome/index.html
 
-      - name: Publish HTML report to GitHub Pages (Chrome)
+      - name: Publish Chrome HTML report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./tests/artifacts
+          publish_dir: ./out
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
 
       - name: Show report URL (Chrome)
         run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/report.html"
+          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
   ui-tests-opera:
     name: UI tests (Opera)
@@ -76,21 +75,20 @@ jobs:
       - name: Run Opera UI tests
         run: ./run_tests.sh -b opera -m ui
 
-      - name: Upload Opera report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-report-opera
-          path: tests/artifacts/report.html
+      - name: Prepare report for GitHub Pages (Opera)
+        run: |
+          mkdir -p out/opera
+          cp tests/artifacts/report.html out/opera/index.html
 
-      - name: Publish HTML report to GitHub Pages (Opera)
+      - name: Publish Opera HTML report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./tests/artifacts
+          publish_dir: ./out
           publish_branch: gh-pages
-          force_orphan: true
+          keep_files: true
 
       - name: Show report URL (Opera)
         run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/report.html"
+          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/"
