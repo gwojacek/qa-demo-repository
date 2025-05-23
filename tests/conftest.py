@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from pytest_html import extras  # important for extras.html()
 
 def _make_screenshot_path(item):
     ts = time.strftime("%Y%m%d-%H%M%S")
@@ -21,18 +22,22 @@ def pytest_runtest_makereport(item, call):
         if not driver:
             return
 
-        # Save screenshot to file
+        # Save screenshot
         p = _make_screenshot_path(item)
         driver.save_screenshot(str(p))
 
-        # Compute relative path for HTML report
-        rel_path = os.path.relpath(p, start=os.path.dirname(item.config.option.htmlpath))
+        # Relative path to HTML file
+        html_report_path = item.config.option.htmlpath
+        rel_path = os.path.relpath(p, start=os.path.dirname(html_report_path))
 
-        # Attach as image EXTRA — this is what gives you a clickable thumbnail on the right
-        html = item.config.pluginmanager.getplugin("html")
-        extras = getattr(report, "extras", [])
-        extras.append(html.extras.image(rel_path))
-        report.extras = extras
+        # Embed manually clickable <img> tag
+        html_snippet = (
+            f'<div><img src="{rel_path}" alt="screenshot" style="width:304px;height:228px;" '
+            f'onclick="window.open(this.src)" align="right"/></div>'
+        )
+        extra = getattr(report, "extra", [])
+        extra.append(extras.html(html_snippet))
+        report.extras = extra
 
 
 @pytest.fixture(scope="session")
