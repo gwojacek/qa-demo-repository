@@ -1,9 +1,11 @@
+## [0.4.0]
+### Internal 
+- added CI solution for github with workflow_dispatch (manually triggering) and working reports on gh pages 
+
 ## [0.3.0]
 ### Internal 
-- changed firefox for opera for easier parallel test executing to work 
-(Chrome’s standalone server was designed for high-throughput parallel WebDriver sessions,
-whereas Firefox’s standalone‐as-Grid implementation is heavier, less concurrent by default,
-and more prone to timeouts when you push it beyond a handful of sessions)
+- changed firefox for opera for easier parallel test executing to work
+
 ## [0.2.0]
 ### Internal 
 - added changelog
