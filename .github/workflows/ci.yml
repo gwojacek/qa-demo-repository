@@ -41,6 +41,7 @@ jobs:
         run: |
           mkdir -p out/chrome
           cp tests/artifacts/report.html out/chrome/index.html
+          cp tests/artifacts/*.png out/chrome/
 
       - name: Publish Chrome HTML report to GitHub Pages
         if: always()
@@ -82,6 +83,7 @@ jobs:
         run: |
           mkdir -p out/opera
           cp tests/artifacts/report.html out/opera/index.html
+          cp tests/artifacts/*.png out/opera/
 
       - name: Publish Opera HTML report to GitHub Pages
         if: always()
