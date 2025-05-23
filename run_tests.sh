@@ -96,7 +96,7 @@ docker compose build test-runner
 
 PYTEST_ARGS=(-v --color=yes)
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
-PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html)
+PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html --self-contained-html )
 
 echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS)…"
 docker compose run --rm --no-deps \
