@@ -1,11 +1,10 @@
-# .github/workflows/ci.yml
 name: CI
 
 on:
   push:
     branches: [master]
   schedule:
-    - cron: '0 0 * * *'    # daily at midnight UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       browser:
@@ -16,20 +15,15 @@ on:
         options: [all, chrome, opera]
 
 jobs:
-  ui-tests:
-    name: UI tests (${{ matrix.browser }})
+  ui-tests-chrome:
+    name: UI tests (Chrome)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chrome, opera]
-    # run always on push/cron; on manual only if all or matching matrix.browser
-    if: >
-      github.event_name != 'workflow_dispatch'
-      || github.event.inputs.browser == 'all'
-      || github.event.inputs.browser == matrix.browser
-
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.browser == 'all' ||
+      github.event.inputs.browser == 'chrome'
     steps:
-      - name: Checkout (keep operadriver)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           clean: false
@@ -39,11 +33,38 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Run ${{ matrix.browser }} UI tests
-        run: ./run_tests.sh -b ${{ matrix.browser }} -m ui
+      - name: Run Chrome UI tests
+        run: ./run_tests.sh -b chrome -m ui
 
-      - name: Upload ${{ matrix.browser }} report
+      - name: Upload Chrome report
         uses: actions/upload-artifact@v4
         with:
-          name: ui-test-report-${{ matrix.browser }}
+          name: ui-test-report-chrome
+          path: tests/artifacts/report.html
+
+  ui-tests-opera:
+    name: UI tests (Opera)
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.browser == 'all' ||
+      github.event.inputs.browser == 'opera'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          clean: false
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Run Opera UI tests
+        run: ./run_tests.sh -b opera -m ui
+
+      - name: Upload Opera report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-report-opera
           path: tests/artifacts/report.html
