@@ -37,6 +37,7 @@ jobs:
         run: ./run_tests.sh -b chrome -m ui
 
       - name: Prepare report for GitHub Pages (Chrome)
+        if: always()
         run: |
           mkdir -p out/chrome
           cp tests/artifacts/report.html out/chrome/index.html
@@ -51,6 +52,7 @@ jobs:
           keep_files: true
 
       - name: Show report URL (Chrome)
+        if: always()
         run: |
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
@@ -76,6 +78,7 @@ jobs:
         run: ./run_tests.sh -b opera -m ui
 
       - name: Prepare report for GitHub Pages (Opera)
+        if: always()
         run: |
           mkdir -p out/opera
           cp tests/artifacts/report.html out/opera/index.html
@@ -90,5 +93,6 @@ jobs:
           keep_files: true
 
       - name: Show report URL (Opera)
+        if: always()
         run: |
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/"
