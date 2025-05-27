@@ -3,9 +3,9 @@ import time
 from pathlib import Path
 
 import pytest
+from pytest_html import extras  # important for extras.html()
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from pytest_html import extras  # important for extras.html()
 
 
 def _make_screenshot_path(item):
@@ -33,6 +33,9 @@ def pytest_runtest_makereport(item, call):
         rel_path = os.path.relpath(p, start=os.path.dirname(html_report_path))
 
         # Embed manually clickable <img> tag
+
+
+
         html_snippet = (
             f'<div><img src="{rel_path}" alt="screenshot" '
             f'style="width:600px; height:auto; display:block; float:right; margin:10px;" '

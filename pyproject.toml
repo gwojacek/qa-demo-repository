@@ -1,8 +1,12 @@
 [tool.poetry]
 name = "qa-demo-repository"
-version = "0.1.0"
-description = "Automated UI/API testing setup with pytest, Docker, and Poetry"
+version = "0.4.0"
+description = "Automated UI/API demo testing setup..."
 authors = ["Jacek Gwoździewicz <gwozdziewiczjacek90@gmail.com>"]
+
+packages = [
+    { include = "qa_demo_repository", from = "src" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
@@ -11,12 +15,9 @@ pytest = "^8.3.5"
 black = "^25.1.0"
 isort = "^6.0.1"
 flake8 = "^7.2.0"
-mypy = "^1.15.0"
 pytest-xdist = "^3.6.0"
 pytest-html = "^4.1.1"
 pre-commit = "^4.2.0"
 
 [tool.poetry.scripts]
-test = "pytest --maxfail=1 --disable-warnings -q"
-fmt = "black . && isort ."
-lint = "flake8 . && mypy ."
+lints = "qa_demo_repository.cli:lints"
