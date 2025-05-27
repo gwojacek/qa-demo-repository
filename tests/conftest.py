@@ -34,8 +34,6 @@ def pytest_runtest_makereport(item, call):
 
         # Embed manually clickable <img> tag
 
-
-
         html_snippet = (
             f'<div><img src="{rel_path}" alt="screenshot" '
             f'style="width:600px; height:auto; display:block; float:right; margin:10px;" '
