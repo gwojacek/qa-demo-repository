@@ -1,3 +1,7 @@
+## [0.5.0]
+### Internal 
+- cli script for linters, precommit check, ini options to pyproject toml, markers py
+
 ## [0.4.0]
 ### Internal 
 - added CI solution for github with workflow_dispatch (manually triggering) and working reports on gh pages 

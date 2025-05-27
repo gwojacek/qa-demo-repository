@@ -21,3 +21,8 @@ pre-commit = "^4.2.0"
 
 [tool.poetry.scripts]
 lints = "qa_demo_repository.cli:lints"
+
+[tool.pytest.ini_options]
+markers = [
+    "ui: mark a test as part of the UI test suite"
+]
