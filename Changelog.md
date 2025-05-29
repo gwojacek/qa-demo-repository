@@ -1,3 +1,7 @@
+## [0.6.0]
+### Internal 
+- expected condtions functions for selenium, api requests for dummy site
+
 ## [0.5.0]
 ### Internal 
 - cli script for linters, precommit check, ini options to pyproject toml, markers py
