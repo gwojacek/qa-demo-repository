@@ -1,4 +1,13 @@
-name: CI
+name: >-
+  CI
+  (${{ github.event_name == 'workflow_dispatch'
+    && 'env=' + github.event.inputs.env_type
+    || 'env=local' }})
+  (${{ github.event_name == 'workflow_dispatch'
+    && (github.event.inputs.browser == 'all'
+      && 'all browsers'
+      || 'browser=' + github.event.inputs.browser)
+    || 'all browsers' }})
 
 on:
   push:
@@ -21,8 +30,8 @@ on:
         options: [local, staging]
 
 jobs:
-  ui-tests-chrome:
-    name: UI/API tests (Chrome) - ${{ matrix.testblock }} [${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}]
+  tests-chrome:
+    name: Tests (Chrome)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
@@ -56,8 +65,12 @@ jobs:
             echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
           fi
 
-      - name: Show active environment
-        run: echo "Running on ENV_TYPE=$ENV_TYPE"
+      - name: Show context info
+        run: |
+          echo "Environment: $ENV_TYPE"
+          echo "Browser: chrome"
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
 
       - name: Run Chrome tests
         run: ./run_tests.sh -b chrome -m "${{ matrix.testblock }}" -e $ENV_TYPE
@@ -83,8 +96,8 @@ jobs:
         run: |
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
-  ui-tests-opera:
-    name: UI/API tests (Opera) - ${{ matrix.testblock }} [${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}]
+  tests-opera:
+    name: Tests (Opera)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
@@ -118,8 +131,12 @@ jobs:
             echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
           fi
 
-      - name: Show active environment
-        run: echo "Running on ENV_TYPE=$ENV_TYPE"
+      - name: Show context info
+        run: |
+          echo "Environment: $ENV_TYPE"
+          echo "Browser: opera"
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
 
       - name: Run Opera tests
         run: ./run_tests.sh -b opera -m "${{ matrix.testblock }}" -e $ENV_TYPE

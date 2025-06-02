@@ -16,11 +16,17 @@ def load_selected_env():
     # Fallback to local if staging not present
     if not os.path.exists(env_file) and env_type != "local":
         env_file = "localconf_local.env"
-    print(f"[env] Loading environment: {env_file}")
     load_dotenv(find_dotenv(env_file), override=True)
+    # Nicely formatted info for pytest header
+    return f"\n=======\n[env] Loading environment: {env_file}\n=======\n"
 
 
-load_selected_env()
+# Load env and get the message
+_env_msg = load_selected_env()
+
+
+def pytest_report_header(config):
+    return _env_msg
 
 
 def _make_screenshot_path(item):
