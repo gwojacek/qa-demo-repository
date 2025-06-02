@@ -22,7 +22,7 @@ on:
 
 jobs:
   tests-chrome:
-    name: Run tests - ${{ matrix.testblock }} - ${{ env.ENV_TYPE }} (Chrome)
+    name: Run tests - ${{ matrix.testblock }} - ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }} (Chrome)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
@@ -87,7 +87,7 @@ jobs:
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
   tests-opera:
-    name: Run tests - ${{ matrix.testblock }} - ${{ env.ENV_TYPE }} (Opera)
+    name: Run tests - ${{ matrix.testblock }} - ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }} (Opera)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
