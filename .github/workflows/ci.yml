@@ -14,26 +14,47 @@ on:
         type: choice
         options: [all, chrome, opera]
       env_type:
-        description: 'Environment to run tests against'
-        required: true
-        default: local
+        description: 'Test environment'
+        required: false
+        default: 'local'
         type: choice
         options: [local, staging]
 
+env:
+  # Resolve environment for all jobs and steps
+  ENV_TYPE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}
+
 jobs:
+
+  # ---- Show ENV at top of workflow (summary, visible to everyone) ----
+  show-env-info:
+    runs-on: ubuntu-latest
+    name: "Show test environment"
+    steps:
+      - name: Display test environment info
+        run: |
+          echo "### Test environment: \`${{ env.ENV_TYPE }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "This environment will be used for all test jobs below."
+    outputs:
+      env_type: ${{ env.ENV_TYPE }}
+
+  # ---- Chrome tests ----
   tests-chrome:
-    name: Run tests - ${{ matrix.testblock }} - ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }} (Chrome)
+    name: ${{ matrix.testblock }} (Chrome)
+    needs: show-env-info
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
       github.event.inputs.browser == 'all' ||
       github.event.inputs.browser == 'chrome'
     env:
-      ENV_TYPE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}
+      ENV_TYPE: ${{ needs.show-env-info.outputs.env_type }}
     strategy:
       fail-fast: false
       matrix:
-        testblock: [ui, api]
+        testblock:
+          - ui
+          - api
 
     steps:
       - name: Checkout
@@ -46,24 +67,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Prepare environment file
+      - name: Show test context
         run: |
-          if [ "${ENV_TYPE}" = "staging" ]; then
-            echo "${{ secrets.LOCALCONF_STAGING_ENV }}" > localconf_staging.env
-          else
-            echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
-          fi
+          echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: chrome"
 
-      - name: Show context info
-        run: |
-          echo "Environment: $ENV_TYPE"
-          echo "Browser: chrome"
-          echo "Testblock: ${{ matrix.testblock }}"
-          echo "Triggered by: ${{ github.event_name }}"
-          echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
-
-      - name: Run Chrome tests
-        run: ./run_tests.sh -b chrome -m "${{ matrix.testblock }}" -e $ENV_TYPE
+      - name: Run ${{ matrix.testblock }} tests (Chrome)
+        run: ./run_tests.sh -b chrome -m ${{ matrix.testblock }}
 
       - name: Prepare report for GitHub Pages (Chrome)
         if: always()
@@ -86,19 +95,28 @@ jobs:
         run: |
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
+      - name: Add environment info to workflow summary
+        if: always()
+        run: |
+          echo "#### [${{ matrix.testblock }} (Chrome)] Environment: \`${ENV_TYPE}\`" >> $GITHUB_STEP_SUMMARY
+
+  # ---- Opera tests ----
   tests-opera:
-    name: Run tests - ${{ matrix.testblock }} - ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }} (Opera)
+    name: ${{ matrix.testblock }} (Opera)
+    needs: show-env-info
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
       github.event.inputs.browser == 'all' ||
       github.event.inputs.browser == 'opera'
     env:
-      ENV_TYPE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}
+      ENV_TYPE: ${{ needs.show-env-info.outputs.env_type }}
     strategy:
       fail-fast: false
       matrix:
-        testblock: [ui, api]
+        testblock:
+          - ui
+          - api
 
     steps:
       - name: Checkout
@@ -111,24 +129,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Prepare environment file
+      - name: Show test context
         run: |
-          if [ "${ENV_TYPE}" = "staging" ]; then
-            echo "${{ secrets.LOCALCONF_STAGING_ENV }}" > localconf_staging.env
-          else
-            echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
-          fi
+          echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: opera"
 
-      - name: Show context info
-        run: |
-          echo "Environment: $ENV_TYPE"
-          echo "Browser: opera"
-          echo "Testblock: ${{ matrix.testblock }}"
-          echo "Triggered by: ${{ github.event_name }}"
-          echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
-
-      - name: Run Opera tests
-        run: ./run_tests.sh -b opera -m "${{ matrix.testblock }}" -e $ENV_TYPE
+      - name: Run ${{ matrix.testblock }} tests (Opera)
+        run: ./run_tests.sh -b opera -m ${{ matrix.testblock }}
 
       - name: Prepare report for GitHub Pages (Opera)
         if: always()
@@ -150,3 +156,8 @@ jobs:
         if: always()
         run: |
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/"
+
+      - name: Add environment info to workflow summary
+        if: always()
+        run: |
+          echo "#### [${{ matrix.testblock }} (Opera)] Environment: \`${ENV_TYPE}\`" >> $GITHUB_STEP_SUMMARY
