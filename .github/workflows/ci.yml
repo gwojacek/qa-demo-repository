@@ -1,9 +1,4 @@
-name: ${{ format(
-  'CI (env={0}) (browser={1})',
-  github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local',
-  github.event_name == 'workflow_dispatch'
-    && (github.event.inputs.browser == 'all' && 'all browsers' || github.event.inputs.browser)
-    || 'all browsers') }}
+name: CI
 
 on:
   push:
@@ -27,7 +22,7 @@ on:
 
 jobs:
   tests-chrome:
-    name: Tests (Chrome)
+    name: Run tests - ${{ matrix.testblock }} - ${{ env.ENV_TYPE }} (Chrome)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
@@ -38,9 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        testblock:
-          - ui
-          - api
+        testblock: [ui, api]
 
     steps:
       - name: Checkout
@@ -65,6 +58,7 @@ jobs:
         run: |
           echo "Environment: $ENV_TYPE"
           echo "Browser: chrome"
+          echo "Testblock: ${{ matrix.testblock }}"
           echo "Triggered by: ${{ github.event_name }}"
           echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
 
@@ -93,7 +87,7 @@ jobs:
           echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
 
   tests-opera:
-    name: Tests (Opera)
+    name: Run tests - ${{ matrix.testblock }} - ${{ env.ENV_TYPE }} (Opera)
     runs-on: ubuntu-latest
     if: |
       github.event_name != 'workflow_dispatch' ||
@@ -104,9 +98,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        testblock:
-          - ui
-          - api
+        testblock: [ui, api]
 
     steps:
       - name: Checkout
@@ -131,6 +123,7 @@ jobs:
         run: |
           echo "Environment: $ENV_TYPE"
           echo "Browser: opera"
+          echo "Testblock: ${{ matrix.testblock }}"
           echo "Triggered by: ${{ github.event_name }}"
           echo "Browser input: ${{ github.event.inputs.browser || 'all' }}"
 
