@@ -1,13 +1,7 @@
 name: >-
-  CI
-  (${{ github.event_name == 'workflow_dispatch'
-    && 'env=' + github.event.inputs.env_type
-    || 'env=local' }})
-  (${{ github.event_name == 'workflow_dispatch'
-    && (github.event.inputs.browser == 'all'
-      && 'all browsers'
-      || 'browser=' + github.event.inputs.browser)
-    || 'all browsers' }})
+  CI (env=${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }})
+     (browser=${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.browser == 'all' && 'all browsers' || github.event.inputs.browser) || 'all browsers' }})
+
 
 on:
   push:
