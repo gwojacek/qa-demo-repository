@@ -1,4 +1,4 @@
-## [0.6.0]
+## [0.7.0]
 ### Internal 
 - Refactored GitHub Actions CI to support running against multiple environments (local, staging) 
 via environment files and workflow UI selection.
