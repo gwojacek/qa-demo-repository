@@ -1,5 +1,14 @@
 ## [0.6.0]
 ### Internal 
+- Refactored GitHub Actions CI to support running against multiple environments (local, staging) 
+via environment files and workflow UI selection.
+
+- Added env_type input to workflow; now CI jobs can run against either environment by selecting from the Actions UI, 
+or default to local on push and scheduled runs.
+- Updated run_tests.sh to accept an -e flag for environment selection, making local and CI runs consistent.
+
+## [0.6.0]
+### Internal 
 - expected condtions functions for selenium, api requests for dummy site
 
 ## [0.5.0]

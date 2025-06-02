@@ -1,4 +1,3 @@
-# run_tests.sh
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -11,24 +10,27 @@ WORKERS="auto"
 HEADLESS=true
 VNC=false
 VNC_PID=""
+ENV_TYPE="local"
 
 usage(){ cat <<EOF >&2
-Usage: $0 [-b chrome|opera] [-m <marker>] [-n <workers>] [-H] [-v]
+Usage: $0 [-b chrome|opera] [-m <marker>] [-n <workers>] [-H] [-v] [-e <env_type>]
   -b    browser (chrome|opera), default=chrome
   -m    pytest marker
   -n    xdist workers, default=auto
   -H    disable headless
   -v    VNC mode (also disables headless & forces workers=1)
+  -e    environment type (local|staging), default=local
 EOF
 exit 1; }
 
-while getopts "b:m:n:Hv" opt; do
+while getopts "b:m:n:He:v" opt; do
   case $opt in
     b) BROWSER="$OPTARG" ;;
     m) MARKER="$OPTARG" ;;
     n) WORKERS="$OPTARG" ;;
     H) HEADLESS=false ;;
     v) VNC=true; HEADLESS=false; WORKERS=1 ;;
+    e) ENV_TYPE="$OPTARG" ;;
     *) usage ;;
   esac
 done
@@ -98,11 +100,12 @@ PYTEST_ARGS=(-v --color=yes)
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
 PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html --self-contained-html )
 
-echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS)…"
+echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS, env=$ENV_TYPE)…"
 docker compose run --rm --no-deps \
   -e BROWSER="$BROWSER" \
   -e HEADLESS="$HEADLESS" \
   -e SELENIUM_REMOTE_URL="$SEL_URL" \
+  -e ENV_TYPE="$ENV_TYPE" \
   --entrypoint pytest \
   test-runner \
   "${PYTEST_ARGS[@]}" \

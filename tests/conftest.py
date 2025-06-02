@@ -3,9 +3,24 @@ import time
 from pathlib import Path
 
 import pytest
+from dotenv import find_dotenv, load_dotenv
 from pytest_html import extras  # important for extras.html()
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+
+
+def load_selected_env():
+    # ENV_TYPE can be 'local' or 'staging'; default to 'local'
+    env_type = os.environ.get("ENV_TYPE", "local")
+    env_file = f"localconf_{env_type}.env"
+    # Fallback to local if staging not present
+    if not os.path.exists(env_file) and env_type != "local":
+        env_file = "localconf_local.env"
+    print(f"[env] Loading environment: {env_file}")
+    load_dotenv(find_dotenv(env_file), override=True)
+
+
+load_selected_env()
 
 
 def _make_screenshot_path(item):

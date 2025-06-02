@@ -5,3 +5,5 @@ tests/artifacts/
 # Python bytecode
 __pycache__/
 *.py[cod]
+localconf_*.env
+!.env.example

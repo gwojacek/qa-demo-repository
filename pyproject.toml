@@ -18,11 +18,13 @@ flake8 = "^7.2.0"
 pytest-xdist = "^3.6.0"
 pytest-html = "^4.1.1"
 pre-commit = "^4.2.0"
+python-dotenv = "^1.1.0"
 
 [tool.poetry.scripts]
 lints = "qa_demo_repository.cli:lints"
 
 [tool.pytest.ini_options]
 markers = [
-    "ui: mark a test as part of the UI test suite"
+    "ui: mark a test as part of the UI test suite",
+    "api: mark a test as part of the API test suite"
 ]
