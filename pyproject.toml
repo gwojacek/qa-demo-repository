@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qa-demo-repository"
-version = "0.4.0"
+version = "0.7.1"
 description = "Automated UI/API demo testing setup..."
 authors = ["Jacek Gwoździewicz <gwozdziewiczjacek90@gmail.com>"]
 
@@ -19,6 +19,7 @@ pytest-xdist = "^3.6.0"
 pytest-html = "^4.1.1"
 pre-commit = "^4.2.0"
 python-dotenv = "^1.1.0"
+requests = "^2.32.3"
 
 [tool.poetry.scripts]
 lints = "qa_demo_repository.cli:lints"

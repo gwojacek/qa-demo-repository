@@ -1,3 +1,8 @@
+## [0.7.1]
+### Internal 
+- Better naming of runs, reflecting the env on which test are executed like "CI (staging) " 
+- updated pyproject
+
 ## [0.7.0]
 ### Internal 
 - Refactored GitHub Actions CI to support running against multiple environments (local, staging) 
