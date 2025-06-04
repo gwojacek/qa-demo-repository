@@ -1,6 +1,6 @@
 ## [0.7.1]
 ### Internal 
-- Better naming of runs, reflecting the env on which test are executed like "CI (staging) " 
+- Better naming of runs in ci, reflecting the env on which test are executed like "CI (staging) " 
 - updated pyproject
 
 ## [0.7.0]
