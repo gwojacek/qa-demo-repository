@@ -53,12 +53,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
+      - name: Prepare environment file
+        run: |
+          if [ "${ENV_TYPE}" = "staging" ]; then
+            echo "${{ secrets.LOCALCONF_STAGING_ENV }}" > localconf_staging.env
+          else
+            echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
+          fi
+
       - name: Show test context
         run: |
           echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: chrome"
 
       - name: Run ${{ matrix.testblock }} tests (Chrome)
-        run: ./run_tests.sh -b chrome -m ${{ matrix.testblock }}
+        run: ./run_tests.sh -b chrome -m ${{ matrix.testblock }} -e $ENV_TYPE
 
       - name: Prepare report for GitHub Pages (Chrome)
         if: always()
@@ -112,12 +120,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
+      - name: Prepare environment file
+        run: |
+          if [ "${ENV_TYPE}" = "staging" ]; then
+            echo "${{ secrets.LOCALCONF_STAGING_ENV }}" > localconf_staging.env
+          else
+            echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
+          fi
+
       - name: Show test context
         run: |
           echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: opera"
 
       - name: Run ${{ matrix.testblock }} tests (Opera)
-        run: ./run_tests.sh -b opera -m ${{ matrix.testblock }}
+        run: ./run_tests.sh -b opera -m ${{ matrix.testblock }} -e $ENV_TYPE
 
       - name: Prepare report for GitHub Pages (Opera)
         if: always()
