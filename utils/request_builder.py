@@ -44,7 +44,7 @@ class Request:
         return self
 
     def default_headers(self) -> "Request":
-        self._default_headers = self._headers.update(self._default_headers)
+        self._headers.update(self._default_headers)
         return self
 
     def auth(self, token: str) -> "Request":

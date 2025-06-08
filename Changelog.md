@@ -1,3 +1,7 @@
+## [0.8.0]
+### Internal 
+- Added detailed readme file 
+
 ## [0.7.1]
 ### Internal 
 - Better naming of runs in ci, reflecting the env on which test are executed like "CI (staging) " 
