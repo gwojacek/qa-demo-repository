@@ -1,11 +1,30 @@
 # Jacek's QA Demo Repository
 
-## Overview
+TL;DR: Modern, Dockerized, reproducible UI/API test repo with CI, parallelization, and artifacts—ready for your next team!
 
+Hello QA/HR Adventurer!
 
-This repository provides a structured and automated framework for executing UI and API tests using Python, Selenium, PyTest, and Docker.
-It supports running tests in parallel, generating detailed reports, capturing screenshots on test failures, and simplifies configuration management.
-It has changelog and versions are tagged.
+I’m happy to share this skill-demonstrative repository, which provides a structured and automated framework for 
+executing UI and API tests using Python, Selenium, PyTest, and Docker. It supports running tests in parallel, generating
+detailed reports, capturing screenshots on test failures, and simplifies configuration management.
+The repository includes a changelog, tagged versions, and a robust GitHub Actions CI setup.
+
+My goal is to showcase my experience in building professional, reliable test repositories to accelerate and smoothen the
+recruitment process.
+
+This README is intentionally thorough: I like my documentation to be well-structured, informative, and full of 
+easy-to-use examples. I’ve added a Detailed Workflow section for a quick grasp of how the repository works.
+
+If you like what you see — hire me!
+
+After more than 5 years as QA Engineer with the Piwik PRO Analytics team, I’ve overcome many challenges and handled
+responsibilities that required timely and professional delivery. I worked in an agile process with around 10 developers,
+had a lot of freedom of action, and was engaged in idea conception and new solutions at early stages. 
+My work split was about 40% manual testing and 60% coding.
+
+I believe this role is a perfect fit for my talents, and I hope you’ll see that too.
+
+Jacek
 
 ---
 ## Technologies
@@ -55,7 +74,26 @@ For more detailed information and advanced installation options, you can refer t
 
 [Poetry Installation Guide](https://python-poetry.org/docs/#installing-with-the-official-installer)
 
-### 3. Install Python dependencies using Poetry
+---
+
+### 3. (Optional) Install TigerVNC for VNC/Visual Debugging
+
+If you want to use the `-v` (VNC) mode for visual debugging of browser sessions, you need TigerVNC installed on your 
+local machine.
+
+**Install on Ubuntu/Debian:**
+
+```
+sudo apt-get update
+sudo apt-get install tigervnc-viewer
+```
+
+You only need this if you use `-v` in your test command (e.g., `./run_tests.sh -b chrome -m ui -v`).
+No installation is needed for headless or CI runs.
+
+---
+
+### 4. Install Python dependencies using Poetry
 
 ```
 poetry install
@@ -153,7 +191,8 @@ pre-commit run
 
 ## Test Markers
 
-Markers help categorize tests, making selective execution straightforward during test runs. Example markers defined in `utils/markers.py`:
+Markers help categorize tests, making selective execution straightforward during test runs. Example markers defined in
+`utils/markers.py`:
 
 ```
 ui = pytest.mark.ui
@@ -162,16 +201,14 @@ api = pytest.mark.api
 
 You can create additional markers for your specific testing needs.
 
-
-Great point—let’s give you a fully detailed workflow including the Docker lifecycle, how the `Dockerfile` and `docker-compose.yml` work, and what happens at each stage. Here’s a more **in-depth breakdown**, step by step:
-
 ---
 
 ## Detailed Workflow
 
 ### 1. **Starting the Test (`./run_tests.sh ...`)**
 
-* The `run_tests.sh` Bash script is your entrypoint. It parses arguments (browser, marker, workers, VNC/headless, environment).
+* The `run_tests.sh` Bash script is your entrypoint. It parses arguments (browser, marker, workers, VNC/headless,
+* environment).
 * Based on these options, it selects which Selenium container(s) to start, and sets up environment variables.
 
 ---
@@ -205,10 +242,12 @@ Great point—let’s give you a fully detailed workflow including the Docker li
      * Installs Poetry to manage Python dependencies.
   4. **Disable Poetry Virtualenvs**
 
-     * Configures Poetry to install everything to the global `/usr/local` site-packages instead of making a `.venv` folder.
+     * Configures Poetry to install everything to the global `/usr/local` site-packages instead of making a `.venv` 
+     * folder.
   5. **Copy Manifest & Install Dependencies**
 
-     * `COPY pyproject.toml poetry.lock ./` then `poetry install --no-root --no-interaction` installs all requirements (but not your app code yet).
+     * `COPY pyproject.toml poetry.lock ./` then `poetry install --no-root --no-interaction` installs all requirements 
+     * (but not your app code yet).
   6. **Copy Application Code**
 
      * `COPY . .` brings all source code, tests, configs, and scripts into the container.
@@ -222,7 +261,8 @@ Great point—let’s give you a fully detailed workflow including the Docker li
 
 ### 4. **Running Pytest Inside the Container**
 
-* The `docker compose run --rm ... test-runner ...` command starts the container, passing environment variables like `BROWSER`, `HEADLESS`, `SELENIUM_REMOTE_URL`, and `ENV_TYPE`.
+* The `docker compose run --rm ... test-runner ...` command starts the container, passing environment variables like 
+* `BROWSER`, `HEADLESS`, `SELENIUM_REMOTE_URL`, and `ENV_TYPE`.
 * Inside the container:
 
   * Poetry dependencies are already installed (from the build step).
@@ -233,7 +273,8 @@ Great point—let’s give you a fully detailed workflow including the Docker li
 ### 5. **Connecting to Selenium via Remote WebDriver**
 
 * The `driver()` fixture in `conftest.py` reads `SELENIUM_REMOTE_URL` (e.g., `http://selenium-chrome:4444/wd/hub`).
-* The container's `pytest` tests connect to Selenium Grid (in its own container) to launch browsers inside the Selenium service containers.
+* The container's `pytest` tests connect to Selenium Grid (in its own container) to launch browsers inside the Selenium 
+service containers.
 
 ---
 
@@ -304,7 +345,8 @@ run_tests.sh
 
 * Dynamically creates either `localconf_local.env` or `localconf_staging.env` based on workflow inputs:
 
-  * **Security:** The contents of these files come from **GitHub Secrets**, not from the repository (keeps sensitive data safe).
+  * **Security:** The contents of these files come from **GitHub Secrets**, not from the repository (keeps sensitive 
+  data safe).
 
 #### 4. **Show Test Context**
 
@@ -321,7 +363,8 @@ run_tests.sh
 
 #### 6. **Collect and Prepare Artifacts**
 
-* After the test run, all generated artifacts (`report.html` and screenshots) are copied to a temporary output directory (`out/chrome/` or `out/opera/`).
+* After the test run, all generated artifacts (`report.html` and screenshots) are copied to a temporary output directory 
+(`out/chrome/` or `out/opera/`).
 
 #### 7. **Publish Report to GitHub Pages**
 
@@ -335,7 +378,8 @@ run_tests.sh
 
 #### 9. **Summarize Environment in Workflow Summary**
 
-* Adds a concise summary line (which block, browser, environment) to the **GitHub Actions summary** panel, improving auditability.
+* Adds a concise summary line (which block, browser, environment) to the **GitHub Actions summary** panel, improving 
+auditability.
 
 ---
 
@@ -343,4 +387,5 @@ run_tests.sh
 
 * **Secrets (env files)** are passed via [GitHub Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets), never stored in your repo.
 * **Docker and test logic is identical** in CI and locally.
-* **Artifacts (reports, screenshots)** are published and preserved, making test results accessible even to non-developers.
+* **Artifacts (reports, screenshots)** are published and preserved, making test results accessible even to 
+non-developers.
