@@ -1,5 +1,5 @@
 name: CI
-run-name: CI (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }})
+run-name: ${{ github.event_name == 'push' && github.event.head_commit.message || github.event_name == 'schedule' && 'Cron CI' || format('CI ({0})', github.event.inputs.env_type || 'local') }}
 
 on:
   push:
