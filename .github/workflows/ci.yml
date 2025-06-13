@@ -1,10 +1,9 @@
 name: CI
-run-name: ${{
-  github.event_name == 'push' && github.event.head_commit.message ||
-  github.event_name == 'schedule' && 'Cron CI' ||
-  github.event_name == 'workflow_dispatch' &&
-  format('Manually triggered on {0} ({1})', github.event.inputs.browser || 'all', github.event.inputs.env_type || 'local')
-}}
+run-name: >-
+  CI - ${{ github.event_name == 'push' && github.event.head_commit.message
+    || github.event_name == 'schedule' && 'Cron CI'
+    || format('Manually triggered on {0}', github.event.inputs.browser || 'all') }}
+  (${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }})
 on:
   push:
     branches: [master]
