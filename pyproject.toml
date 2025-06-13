@@ -31,6 +31,8 @@ markers = [
     "api: API ",
     "usertests:  usertests "
 ]
-addopts = "--color=yes"
+addopts = "--color=yes --capture=tee-sys"
+log_cli = true
+log_cli_level = "INFO"
 
 filterwarnings = "ignore:Unverified HTTPS request.*"

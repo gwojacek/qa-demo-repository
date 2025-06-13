@@ -41,6 +41,7 @@ jobs:
         testblock:
           - ui
           - api
+          - usertests
 
     steps:
       - name: Checkout
@@ -108,6 +109,7 @@ jobs:
         testblock:
           - ui
           - api
+          - usertests
 
     steps:
       - name: Checkout

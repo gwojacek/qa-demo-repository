@@ -1,3 +1,5 @@
+import builtins
+import logging
 import os
 import time
 from pathlib import Path
@@ -13,6 +15,11 @@ from utils.api_requests import create_account
 from utils.payloads import user_create_payload
 
 fake = Faker("pl_PL")  # Use Polish locale for more realistic data
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    force=True,
+)
 
 
 def load_selected_env():
@@ -33,6 +40,25 @@ _env_msg = load_selected_env()
 
 def pytest_report_header(config):
     return _env_msg
+
+
+# ---- printing helper -------------------------------------------------------
+_ORIG_PRINT = builtins.print
+
+
+def _print_and_log(*args, **kwargs):
+    """Forward print calls to the logger so they appear with xdist."""
+    msg = " ".join(str(a) for a in args)
+    logging.getLogger("PRINT").info(msg)
+    _ORIG_PRINT(*args, **kwargs)
+
+
+def pytest_configure(config):
+    builtins.print = _print_and_log
+
+
+def pytest_unconfigure(config):
+    builtins.print = _ORIG_PRINT
 
 
 def _make_screenshot_path(item):

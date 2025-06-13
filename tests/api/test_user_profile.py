@@ -11,11 +11,14 @@ logger = logging.getLogger(__name__)
 
 @usertests
 def test_create_account():
+    logger.info("THIS IS A TEST")
+    print("shabadaba")
+
     user = user_create_payload()
     req = create_account(user).send()
-    logger.info("THIS IS A TEST")
     logger.info("THIS IS A TEST")
     assert (
         req.status_code == HTTPStatus.OK
     ), f"Request failed with status {req.status_code}: {req.content}"
     logger.info(f"requests: {req.text}")
+    print("shabadaba")

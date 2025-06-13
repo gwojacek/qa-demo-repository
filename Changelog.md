@@ -1,6 +1,11 @@
+## [0.9.0]
+### Internal 
+-  fixed logger and print workaround for xdist
+
 ## [0.8.1]
 ### Internal 
--  
+-  better intro to readme, tigervnc add
+
 
 ## [0.8.0]
 ### Internal 

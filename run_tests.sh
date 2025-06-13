@@ -96,7 +96,14 @@ rm -rf tests/artifacts && mkdir -p tests/artifacts
 echo "📦 Building test-runner…"
 docker compose build test-runner
 
-PYTEST_ARGS=(-v -s --color=yes)
+PYTEST_ARGS=(-v --color=yes)
+
+# Only disable output capturing when a single worker is used. With multiple
+# workers, using `-s` would prevent stdout from being forwarded to the main
+# process, so prints would never appear.
+if [[ "$WORKERS" == "1" ]]; then
+  PYTEST_ARGS+=( -s )
+fi
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
 PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html --self-contained-html )
 
