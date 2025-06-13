@@ -1,6 +1,8 @@
 ## [0.9.0]
 ### Internal 
--  fixed logger and print workaround for xdist
+- fixed logger and print workaround for xdist
+- minor code cleaning
+- better ci names
 
 ## [0.8.1]
 ### Internal 

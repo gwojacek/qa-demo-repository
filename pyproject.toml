@@ -32,7 +32,4 @@ markers = [
     "usertests:  usertests "
 ]
 addopts = "--color=yes --capture=tee-sys"
-log_cli = true
-log_cli_level = "INFO"
-
 filterwarnings = "ignore:Unverified HTTPS request.*"
