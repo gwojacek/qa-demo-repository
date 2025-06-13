@@ -20,12 +20,17 @@ pytest-html = "^4.1.1"
 pre-commit = "^4.2.0"
 python-dotenv = "^1.1.0"
 requests = "^2.32.3"
+faker = "^37.3.0"
 
 [tool.poetry.scripts]
 lints = "qa_demo_repository.cli:lints"
 
 [tool.pytest.ini_options]
 markers = [
-    "ui: mark a test as part of the UI test suite",
-    "api: mark a test as part of the API test suite"
+    "ui: UI ",
+    "api: API ",
+    "usertests:  usertests "
 ]
+addopts = "--color=yes"
+
+filterwarnings = "ignore:Unverified HTTPS request.*"

@@ -96,7 +96,7 @@ rm -rf tests/artifacts && mkdir -p tests/artifacts
 echo "📦 Building test-runner…"
 docker compose build test-runner
 
-PYTEST_ARGS=(-v --color=yes)
+PYTEST_ARGS=(-v -s --color=yes)
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
 PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html --self-contained-html )
 

@@ -1,6 +1,7 @@
 # Jacek's QA Demo Repository
 
-TL;DR: Modern, Dockerized, reproducible UI/API test repo with CI, parallelization, and artifacts—ready for your next team!
+TL;DR: 
+Modern, Dockerized, reproducible UI/API test repo with CI, parallelization, and artifacts—ready for your next team!
 
 Hello QA/HR Adventurer!
 

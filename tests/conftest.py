@@ -4,9 +4,15 @@ from pathlib import Path
 
 import pytest
 from dotenv import find_dotenv, load_dotenv
+from faker import Faker
 from pytest_html import extras  # important for extras.html()
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+
+from utils.api_requests import create_account
+from utils.payloads import user_create_payload
+
+fake = Faker("pl_PL")  # Use Polish locale for more realistic data
 
 
 def load_selected_env():
@@ -87,3 +93,10 @@ def driver():
     driver.set_window_size(2560, 1440)
     yield driver
     driver.quit()
+
+
+@pytest.fixture
+def new_user_api():
+    user = user_create_payload()
+    req = create_account(user)
+    return {"user": user, "request": req}

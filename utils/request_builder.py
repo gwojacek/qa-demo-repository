@@ -16,9 +16,13 @@ class RequestMethod(str, Enum):
 
 @dataclass
 class Request:
-    def __init__(self, method: RequestMethod, domain: str = os.environ["ADDRESS"]):
-        self._method = method
+    def __init__(self, method: RequestMethod, domain: str = None):
+        if domain is None:
+            domain = os.environ.get("ADDRESS")
+            if not domain:
+                raise RuntimeError("Required env var ADDRESS is not set!")
         self._domain = domain
+        self._method = method
         self._path = None
         self._headers = {}
         self._default_headers = {"Content-Type": "application/json"}
