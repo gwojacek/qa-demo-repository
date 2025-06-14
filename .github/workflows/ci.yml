@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chrome-${{ matrix.testblock }}-report
-          path: out/chrome/${{ matrix.testblock }}
+          path: out
 
 
       - name: Show report URL (Chrome)
@@ -157,7 +157,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: opera-${{ matrix.testblock }}-report
-          path: out/opera/${{ matrix.testblock }}
+          path: out
 
 
       - name: Show report URL (Opera)
@@ -182,11 +182,6 @@ jobs:
           path: out
           merge-multiple: true
 
-      - name: Flatten report directories
-        run: |
-          shopt -s dotglob
-          mv out/out/* out/
-          rm -rf out/out
 
       - name: Publish HTML reports
         uses: peaceiris/actions-gh-pages@v4
