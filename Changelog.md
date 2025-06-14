@@ -4,6 +4,7 @@
 - minor code cleaning
 - better ci names
 - fixed GitHub Pages publishing so all reports persist
+- sequential GH Pages upload to avoid push conflicts
 
 
 ## [0.8.1]
