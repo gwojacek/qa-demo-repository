@@ -75,9 +75,12 @@ jobs:
       - name: Prepare report for GitHub Pages (Chrome)
         if: always()
         run: |
-          mkdir -p out/chrome
-          cp tests/artifacts/report.html out/chrome/index.html
-          cp tests/artifacts/*.png out/chrome/
+          DIR=out/chrome/${{ matrix.testblock }}
+          mkdir -p "$DIR"
+          cp tests/artifacts/report.html "$DIR/index.html"
+          if ls tests/artifacts/*.png >/dev/null 2>&1; then
+            cp tests/artifacts/*.png "$DIR/"
+          fi
 
       - name: Publish Chrome HTML report to GitHub Pages
         if: always()
@@ -91,7 +94,7 @@ jobs:
       - name: Show report URL (Chrome)
         if: always()
         run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/"
+          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/${{ matrix.testblock }}/"
 
       - name: Add environment info to workflow summary
         if: always()
@@ -143,9 +146,12 @@ jobs:
       - name: Prepare report for GitHub Pages (Opera)
         if: always()
         run: |
-          mkdir -p out/opera
-          cp tests/artifacts/report.html out/opera/index.html
-          cp tests/artifacts/*.png out/opera/
+          DIR=out/opera/${{ matrix.testblock }}
+          mkdir -p "$DIR"
+          cp tests/artifacts/report.html "$DIR/index.html"
+          if ls tests/artifacts/*.png >/dev/null 2>&1; then
+            cp tests/artifacts/*.png "$DIR/"
+          fi
 
       - name: Publish Opera HTML report to GitHub Pages
         if: always()
@@ -159,7 +165,7 @@ jobs:
       - name: Show report URL (Opera)
         if: always()
         run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/"
+          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/${{ matrix.testblock }}/"
 
       - name: Add environment info to workflow summary
         if: always()
