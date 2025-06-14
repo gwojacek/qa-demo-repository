@@ -3,6 +3,8 @@
 - fixed logger and print workaround for xdist
 - minor code cleaning
 - better ci names
+- fixed GitHub Pages publishing so all reports persist
+
 
 ## [0.8.1]
 ### Internal 

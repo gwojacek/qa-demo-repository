@@ -90,7 +90,7 @@ jobs:
           publish_dir: ./out
           publish_branch: gh-pages
           keep_files: true
-          force_orphan: true
+          force: true
 
 
       - name: Show report URL (Chrome)
@@ -163,6 +163,8 @@ jobs:
           publish_dir: ./out
           publish_branch: gh-pages
           keep_files: true
+          force: true
+
 
       - name: Show report URL (Opera)
         if: always()
