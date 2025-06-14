@@ -364,14 +364,15 @@ run_tests.sh
 
 #### 6. **Collect and Prepare Artifacts**
 
-* After the test run, all generated artifacts (`report.html` and screenshots) are copied to a temporary output directory 
-(`out/chrome/` or `out/opera/`).
+* After the test run, all generated artifacts (`report.html` and screenshots) are copied to a temporary output directory
+  under the browser and test block. Examples: `out/chrome/ui/`, `out/chrome/api/`,
+  `out/opera/ui/`, etc.
 
 #### 7. **Publish Report to GitHub Pages**
 
 * Uses [`peaceiris/actions-gh-pages`](https://github.com/peaceiris/actions-gh-pages) to publish the HTML report and screenshots to the `gh-pages` branch.
 * **Result:** Test results are easily browsable at
-  `https://<org>.github.io/<repo>/chrome/` or `/opera/`.
+  `https://<org>.github.io/<repo>/chrome/<block>/` or `/opera/<block>/`.
 
 #### 8. **Log Report URLs**
 
