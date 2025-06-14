@@ -182,6 +182,12 @@ jobs:
           path: out
           merge-multiple: true
 
+      - name: Flatten report directories
+        run: |
+          shopt -s dotglob
+          mv out/out/* out/
+          rm -rf out/out
+
       - name: Publish HTML reports
         uses: peaceiris/actions-gh-pages@v4
         with:
