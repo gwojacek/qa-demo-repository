@@ -1,5 +1,5 @@
 from pages.main_page import MainPage
-from utils.markers import ui
+from utils.markers import ui, xfail
 
 
 @ui
@@ -10,6 +10,7 @@ def test_wikipedia_main_page(driver):
 
 
 @ui
+@xfail
 def test_wikipedia_main_page_failed(driver):
     page = MainPage(driver)
     page.load()
@@ -24,6 +25,7 @@ def test_wikipedia_main_page2(driver):
 
 
 @ui
+@xfail
 def test_wikipedia_main_page_failed2(driver):
     page = MainPage(driver)
     page.load()

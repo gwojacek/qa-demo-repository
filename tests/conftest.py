@@ -72,30 +72,35 @@ def _make_screenshot_path(item):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     report = (yield).get_result()
-    if report.when == "call" and report.failed:
-        driver = item.funcargs.get("driver")
-        if not driver:
-            return
+    if report.when != "call":
+        return
 
-        # Save screenshot
-        p = _make_screenshot_path(item)
-        driver.save_screenshot(str(p))
+    # Consider all non-passed outcomes: failed, xfailed (skipped), xpassed
+    if report.outcome not in ("failed", "skipped"):
+        return
 
-        # Relative path to HTML file
-        html_report_path = item.config.option.htmlpath
-        rel_path = os.path.relpath(p, start=os.path.dirname(html_report_path))
+    driver = item.funcargs.get("driver")
+    if not driver:
+        return
 
-        # Embed manually clickable <img> tag
+    # Save screenshot
+    p = _make_screenshot_path(item)
+    driver.save_screenshot(str(p))
 
-        html_snippet = (
-            f'<div><img src="{rel_path}" alt="screenshot" '
-            f'style="width:600px; height:auto; display:block; float:right; margin:10px;" '
-            f'onclick="window.open(this.src)"/></div>'
-        )
+    # Relative path to HTML file
+    html_report_path = item.config.option.htmlpath
+    rel_path = os.path.relpath(p, start=os.path.dirname(html_report_path))
 
-        extra = getattr(report, "extra", [])
-        extra.append(extras.html(html_snippet))
-        report.extras = extra
+    # Embed clickable screenshot
+    html_snippet = (
+        f'<div><img src="{rel_path}" alt="screenshot" '
+        f'style="width:600px; height:auto; display:block; float:right; margin:10px;" '
+        f'onclick="window.open(this.src)"/></div>'
+    )
+
+    extra = getattr(report, "extra", [])
+    extra.append(extras.html(html_snippet))
+    report.extras = extra
 
 
 @pytest.fixture(scope="session")
