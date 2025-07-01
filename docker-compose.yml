@@ -9,6 +9,7 @@ services:
   selenium-chrome-debug:
     image: selenium/standalone-chrome-debug:latest
     container_name: selenium-chrome-debug
+    shm_size: 2g
     environment:
       VNC_NO_PASSWORD: "1"
       SCREEN_WIDTH: 2560
@@ -31,6 +32,7 @@ services:
   selenium-opera-debug:
     image: selenium/standalone-chrome-debug:latest
     container_name: selenium-opera-debug
+    shm_size: 2g
     volumes:
       - ./tools/operadriver:/usr/local/bin/opera-driver
     environment:

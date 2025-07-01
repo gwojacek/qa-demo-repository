@@ -111,11 +111,11 @@ Create these manually based on your needs, for example:
 
 ```env
 # localconf_local.env
-ADDRESS=automationexercise.com
+ADDRESS="https://www.automationexercise.com/"
 
 
 # localconf_staging.env
-ADDRESS=automationexercise.com
+ADDRESS="https://www.automationexercise.com/"
 
 ```
 

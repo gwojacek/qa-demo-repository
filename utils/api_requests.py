@@ -4,19 +4,19 @@ from utils.request_builder import Request, RequestMethod
 
 
 def get_all_products():
-    return Request(RequestMethod.GET).path("/api/productsList")
+    return Request(RequestMethod.GET).path("/api/productsList").send()
 
 
 def post_to_products_list():
-    return Request(RequestMethod.POST).path("/api/productsList")
+    return Request(RequestMethod.POST).path("/api/productsList").send()
 
 
 def get_all_brands():
-    return Request(RequestMethod.GET).path("/api/brandsList")
+    return Request(RequestMethod.GET).path("/api/brandsList").send()
 
 
 def put_to_brands_list():
-    return Request(RequestMethod.PUT).path("/api/brandsList")
+    return Request(RequestMethod.PUT).path("/api/brandsList").send()
 
 
 def search_product(search_term: str):
@@ -28,11 +28,12 @@ def search_product(search_term: str):
         Request(RequestMethod.POST)
         .path("/api/searchProduct")
         .data({"search_product": search_term})
+        .send()
     )
 
 
 def search_product_no_param():
-    return Request(RequestMethod.POST).path("/api/searchProduct")
+    return Request(RequestMethod.POST).path("/api/searchProduct").send()
 
 
 def verify_login_valid(email: str, password: str):
@@ -45,6 +46,7 @@ def verify_login_valid(email: str, password: str):
         Request(RequestMethod.POST)
         .path("/api/verifyLogin")
         .data({"email": email, "password": password})
+        .send()
     )
 
 
@@ -57,11 +59,12 @@ def verify_login_no_email(password: str):
         Request(RequestMethod.POST)
         .path("/api/verifyLogin")
         .data({"password": password})
+        .send()
     )
 
 
 def verify_login_delete():
-    return Request(RequestMethod.DELETE).path("/api/verifyLogin")
+    return Request(RequestMethod.DELETE).path("/api/verifyLogin").send()
 
 
 def verify_login_invalid(email: str, password: str):
@@ -74,6 +77,7 @@ def verify_login_invalid(email: str, password: str):
         Request(RequestMethod.POST)
         .path("/api/verifyLogin")
         .data({"email": email, "password": password})
+        .send()
     )
 
 
@@ -84,7 +88,7 @@ def create_account(user: dict):
         firstname, lastname, company, address1, address2, country, zipcode,
         state, city, mobile_number
     """
-    return Request(RequestMethod.POST).path("/api/createAccount").data(user)
+    return Request(RequestMethod.POST).path("/api/createAccount").data(user).send()
 
 
 def delete_account(email: str, password: str):
@@ -97,6 +101,7 @@ def delete_account(email: str, password: str):
         Request(RequestMethod.DELETE)
         .path("/api/deleteAccount")
         .data({"email": email, "password": password})
+        .send()
     )
 
 
@@ -107,7 +112,7 @@ def update_account(user: dict):
         firstname, lastname, company, address1, address2, country, zipcode,
         state, city, mobile_number
     """
-    return Request(RequestMethod.PUT).path("/api/updateAccount").data(user)
+    return Request(RequestMethod.PUT).path("/api/updateAccount").data(user).send()
 
 
 def get_user_detail_by_email(email: str):
@@ -119,4 +124,5 @@ def get_user_detail_by_email(email: str):
         Request(RequestMethod.GET)
         .path("/api/getUserDetailByEmail")
         .params({"email": email})
+        .send()
     )

@@ -74,7 +74,12 @@ class Request:
         return self
 
     def _prepare_url(self) -> str:
-        return urljoin(f"https://{self._domain}", self._path)
+        # Accept either full URL or domain only in ADDRESS
+        if self._domain.startswith("http://") or self._domain.startswith("https://"):
+            base = self._domain
+        else:
+            base = f"https://{self._domain}"
+        return urljoin(base, self._path)
 
     def send(self) -> Response:
         response = Session().request(

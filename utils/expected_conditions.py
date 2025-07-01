@@ -12,7 +12,7 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-default_timeout = 30
+default_timeout = 3
 
 
 def find_element(driver: WebDriver, locator: Tuple[str, str]) -> WebElement:
@@ -487,17 +487,26 @@ def move_to_element(
     locator: Tuple[str, str],
     index: int = 0,
     timeout: Optional[int] = None,
+    wait_for_after_move: Optional[Tuple[str, str]] = None,
+    wait_timeout: Optional[int] = None,
 ) -> None:
-    """Move mouse to element at index (default 0).
+    """
+    Move mouse to element at index (default 0).
+    Optionally wait for a given sub-element (e.g. overlay) to be visible after hover.
 
     Example:
-        move_to_element(driver, NavLocators.MENU_ITEMS, 3)
-        # NavLocators.MENU_ITEMS = (By.CSS_SELECTOR, 'nav .menu-item')
+        move_to_element(driver, ProductLocators.PRODUCT_CARDS, 0, wait_for_after_move=(By.CSS_SELECTOR, '.overlay-content'))
     """
-    elems = wait_for_elements_visible(driver, locator, timeout)
+    elems = wait_for_elements(driver, locator, timeout)
     if index >= len(elems):
         raise IndexError(f"No element at index {index} for {locator}")
-    ActionChains(driver).move_to_element(elems[index]).perform()
+    target_elem = elems[index]
+    ActionChains(driver).move_to_element(target_elem).perform()
+
+    # Optional: Wait for a sub-element inside the hovered element
+    if wait_for_after_move:
+        # context: the hovered element
+        wait_for_elements_visible(target_elem, wait_for_after_move, wait_timeout)
 
 
 def drag_and_drop(driver: WebDriver, source: WebElement, target: WebElement) -> None:

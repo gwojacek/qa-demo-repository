@@ -45,6 +45,9 @@ jobs:
           - ui
           - api
           - usertests
+          - cart
+          - shopping_modal
+          - product_details
 
     steps:
       - name: Checkout
@@ -115,6 +118,9 @@ jobs:
           - ui
           - api
           - usertests
+          - cart
+          - shopping_modal
+          - product_details
 
     steps:
       - name: Checkout

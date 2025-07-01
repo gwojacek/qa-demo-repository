@@ -2,19 +2,22 @@ import builtins
 import logging
 import os
 import time
+from http import HTTPStatus
 from pathlib import Path
 
 import pytest
 from dotenv import find_dotenv, load_dotenv
 from faker import Faker
-from pytest_html import extras  # important for extras.html()
+from pytest_html import extras
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
-from utils.api_requests import create_account
-from utils.payloads import user_create_payload
+from components.consent_popup import ConsentPopup
+from utils.api_requests import (create_account, delete_account,
+                                verify_login_valid)
+from utils.payloads import User, user_create_payload
 
-fake = Faker("pl_PL")  # Use Polish locale for more realistic data
+fake = Faker("pl_PL")
 logging.basicConfig(
     level=logging.INFO,
     format="%(message)s",
@@ -103,7 +106,7 @@ def pytest_runtest_makereport(item, call):
     report.extras = extra
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def driver():
     browser = os.getenv("BROWSER", "chrome").lower()
     remote = os.getenv("SELENIUM_REMOTE_URL")
@@ -126,8 +129,29 @@ def driver():
     driver.quit()
 
 
-@pytest.fixture
-def new_user_api():
-    user = user_create_payload()
-    req = create_account(user)
-    return {"user": user, "request": req}
+@pytest.fixture(scope="class")
+def driver_on_address(driver):
+    address = os.environ.get("ADDRESS")
+    if not address:
+        raise RuntimeError("ADDRESS env var not set!")
+    driver.get(address)
+    ConsentPopup(driver).accept()  # Handles the popup if present
+
+    yield driver
+
+
+@pytest.fixture(scope="session")
+def user_api(request):
+    user_data = user_create_payload()
+    other = {
+        k: v for k, v in user_data.items() if k not in ("name", "email", "password")
+    }
+    user = User(user_data["name"], user_data["email"], user_data["password"], other)
+    create_account(user_data)
+    yield user
+    # Default: delete unless param==False
+    delete = getattr(request, "param", True)
+    if delete:
+        delete_account(user.email, user.password)
+        resp = verify_login_valid(user.email, user.password)
+        assert resp.json().get("responseCode") == HTTPStatus.NOT_FOUND
