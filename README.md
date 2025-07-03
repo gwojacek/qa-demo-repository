@@ -1,7 +1,7 @@
 # Jacek's QA Demo Repository
 
 TL;DR: 
-Modern, Dockerized, reproducible UI/API test repo with CI, parallelization, and artifacts—ready for your next team!
+Modern, Dockerized, reproducible tests repository with CI, parallelization, and artifacts—ready for your next team!
 
 Hello QA/HR Adventurer!
 
@@ -16,14 +16,15 @@ recruitment process.
 This README is intentionally thorough: I like my documentation to be well-structured, informative, and full of 
 easy-to-use examples. I’ve added a Detailed Workflow section for a quick grasp of how the repository works.
 
-If you like what you see — hire me!
-
 After more than 5 years as QA Engineer with the Piwik PRO Analytics team, I’ve overcome many challenges and handled
 responsibilities that required timely and professional delivery. I worked in an agile process with around 10 developers,
 had a lot of freedom of action, and was engaged in idea conception and new solutions at early stages. 
 My work split was about 40% manual testing and 60% coding.
 
-I believe this role is a perfect fit for my talents, and I hope you’ll see that too.
+Tests you can find in this repository are not meant to show every case that could have been covered by them, but as a showcase
+of my approach to building test suite.
+
+If you like what you see — hire me!
 
 Jacek
 
@@ -107,7 +108,7 @@ Tests rely on environment-specific configuration files located in the root direc
 * `localconf_local.env`
 * `localconf_staging.env`
 
-Create these manually based on your needs, for example:
+Create these manually:
 
 ```env
 # localconf_local.env
@@ -128,7 +129,7 @@ The `run_tests.sh` script manages test execution with several customizable optio
 
 * `-b`: Browser selection (`chrome`, `opera`)
 * `-m`: PyTest marker (**required**) (e.g., `ui`, `api`, or other)
-* `-n`: Number of parallel workers (`auto` or specific number)
+* `-n`: Number of parallel workers (specific number)
 * `-H`: Disable headless mode (useful for debugging)
 * `-v`: Enable VNC viewer mode (visual test execution)
 * `-e`: Environment type (`local`, `staging`)
@@ -179,14 +180,10 @@ The test report is directly accessible and clickable via the test output, e.g.:
 
 ## Running Linters
 
-You can execute linters using either Poetry or directly through pre-commit:
+You can execute linters using Poetry  - it runs black, isort and flake8:
 
 ```
-# Using Poetry
 poetry run lints
-
-# Using pre-commit directly
-pre-commit run
 ```
 ---
 
@@ -208,8 +205,8 @@ You can create additional markers for your specific testing needs.
 
 ### 1. **Starting the Test (`./run_tests.sh ...`)**
 
-* The `run_tests.sh` Bash script is your entrypoint. It parses arguments (browser, marker, workers, VNC/headless,
-* environment).
+* The `run_tests.sh` Bash script is your entrypoint. It parses arguments (browser, marker, workers, VNC/headless, 
+environment).
 * Based on these options, it selects which Selenium container(s) to start, and sets up environment variables.
 
 ---
@@ -244,11 +241,11 @@ You can create additional markers for your specific testing needs.
   4. **Disable Poetry Virtualenvs**
 
      * Configures Poetry to install everything to the global `/usr/local` site-packages instead of making a `.venv` 
-     * folder.
+     folder.
   5. **Copy Manifest & Install Dependencies**
 
      * `COPY pyproject.toml poetry.lock ./` then `poetry install --no-root --no-interaction` installs all requirements 
-     * (but not your app code yet).
+     (but not your app code yet).
   6. **Copy Application Code**
 
      * `COPY . .` brings all source code, tests, configs, and scripts into the container.
@@ -281,8 +278,8 @@ service containers.
 
 ### 6. **Test Execution, Reporting, and Artifacts**
 
-* Tests run in parallel (pytest-xdist) and by marker (e.g., only UI or API).
-* If a test fails, a screenshot is taken and saved to `tests/artifacts/`.
+* Tests run in parallel (pytest-xdist) and by marker (e.g., only ui or api or other).
+* If a test fails, xfails, a screenshot is taken and saved to `tests/artifacts/`.
 * Pytest-html generates a self-contained HTML report, which also embeds screenshots of failed tests.
 
 ---
@@ -327,7 +324,7 @@ run_tests.sh
 * The workflow uses a **matrix** to run tests for each:
 
   * Browser (`chrome`, `opera`, or both)
-  * Test block/marker (`ui`, `api`)
+  * Test block/marker (`ui`, `api`, others)
 * This means jobs run in parallel for combinations (e.g., UI+Chrome, API+Opera).
 
 ---

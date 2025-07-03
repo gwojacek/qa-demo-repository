@@ -1,3 +1,12 @@
+## [1.0.0]
+### Internal
+- version 1.0.0 finally ;)
+- detailed BUGS.md document added
+- new tests added with cart, shopping_modal and product_details markers
+- new page objects and helpers for advanced UI tests
+- expanded CI those markers
+- docker-compose debug services now set shm_size to 2g - without it the vnc crushed
+
 ## [0.9.0]
 ### Internal 
 - fixed logger and print workaround for xdist
