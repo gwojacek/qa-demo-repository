@@ -29,7 +29,10 @@ lints = "qa_demo_repository.cli:lints"
 markers = [
     "ui: UI ",
     "api: API ",
-    "usertests:  usertests "
+    "usertests:  usertests ",
+    "product_details:  product_details ",
+    "cart:  cart ",
+    "shopping_modal:  shopping_modal "
 ]
 addopts = "--color=yes --capture=tee-sys"
 filterwarnings = "ignore:Unverified HTTPS request.*"

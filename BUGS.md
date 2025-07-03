@@ -40,6 +40,10 @@
 ### Severity
 **Minor**
 
+### Affected Tests
+- `tests/api/test_basic_api_login_tests.py::test_verify_login_cases`
+- `tests/api/test_user_profile_api.py::test_create_delete_account`
+- `tests/ui/test_user_profile_ui.py::test_delete_account_via_ui_and_verify_api`
 ---
 
 ## 2. Modal Blocks UI and Cannot Be Closed by Clicking Outside
@@ -76,6 +80,8 @@
 ### Severity
 **Medium**
 
+### Affected Tests
+- `tests/ui/test_shopping_modal.py::test_modal_overlay_click_closes_modal`
 ---
 
 ## 3. Cart Quantity Modification Not Working
@@ -107,6 +113,9 @@
 ### Severity
 **High**
 
+### Affected Tests
+- `tests/ui/test_cart.py::test_cart_quantity_editable`
+
 ---
 
 ## 4. Product Images Not Clickable
@@ -136,6 +145,9 @@
 
 ### Severity
 **Medium**
+
+### Affected Tests
+- `tests/ui/test_cart.py::test_cart_product_image_redirects_to_details`
 
 ---
 
@@ -172,6 +184,10 @@
 ### Severity
 **High** (Blocks purchase flow)
 
+### Affected Tests
+- `tests/ui/test_shopping_modal.py::test_visibility_time_modal`
+
+
 ---
 
 ## 6. Product Listing Visual Layout Bug
@@ -205,6 +221,10 @@
 
 ### Severity
 **Medium**
+
+### Affected Tests
+- _no automated test yet_
+
 
 ---
 
@@ -241,3 +261,7 @@ commentary text fields (name, email, comments)
 
 ### Severity
 **High**
+
+### Affected Tests
+- `tests/ui/test_cart.py::test_add_massive_quantity`
+- `tests/ui/test_product_details.py::test_quantity_non_integer_input_rejected`

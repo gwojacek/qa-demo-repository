@@ -293,6 +293,13 @@ service containers.
 * The report is accessible at `tests/artifacts/report.html`.
 
 ---
+
+## Bug Tracking
+
+Discovered issues are logged in [BUGS.md](BUGS.md), as a showcase of how I handle bugs - normally I would use Jira.
+Tests are marked `xfail` or `skip` until those bugs are fixed.
+
+---
 ## Visual Summary
 
 ```
