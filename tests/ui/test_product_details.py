@@ -14,24 +14,24 @@ from utils.markers import product_details, ui
         pytest.param(
             "12abc",
             marks=pytest.mark.xfail(
-                reason="BUG: accepts mixed string '12abc' as quantity"
+                reason="BUG no. 7: accepts mixed string '12abc' as quantity"
             ),
             id="mixed_string",
         ),
         pytest.param("!", id="symbol"),
         pytest.param(
             "-5",
-            marks=pytest.mark.xfail(reason="BUG: accepts negative numbers"),
+            marks=pytest.mark.xfail(reason="BUG no. 7: accepts negative numbers"),
             id="negative",
         ),
         pytest.param(
             "3.5",
-            marks=pytest.mark.xfail(reason="BUG: accepts float as quantity"),
+            marks=pytest.mark.xfail(reason="BUG no. 7: accepts float as quantity"),
             id="float",
         ),
         pytest.param(
             "  7   ",
-            marks=pytest.mark.xfail(reason="BUG: accepts padded string as quantity"),
+            marks=pytest.mark.xfail(reason="BUG no. 7: accepts padded string as quantity"),
             id="whitespace",
         ),
     ],

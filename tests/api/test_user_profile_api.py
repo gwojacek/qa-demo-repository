@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 @api
 @usertests
 def test_create_delete_account():
+    """Create a user, delete it, then verify the account no longer exists."""
+
     user = user_create_payload()
     req = create_account(user)
     assert req.json().get("responseCode") == HTTPStatus.CREATED
@@ -26,4 +28,6 @@ def test_create_delete_account():
 @api
 @usertests
 def test_create_account_with_fixture(user_api):
+    """Placeholder for testing account creation using a fixture."""
+
     pass
