@@ -11,6 +11,8 @@ from utils.markers import usertests
 @usertests
 @pytest.mark.parametrize("user_api", [False], indirect=True)  # fixture parametrization
 def test_delete_account_via_ui_and_verify_api(driver, user_api):
+    """Delete an account through the UI and verify via API that it was removed."""
+
     login_page = LoginPage(driver)
     login_page.load()
     login_page.login(user_api.email, user_api.password)

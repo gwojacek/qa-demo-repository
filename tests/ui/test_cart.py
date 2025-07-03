@@ -10,6 +10,8 @@ from utils.markers import cart, ui
 @ui
 @cart
 def test_add_single_product(driver_on_address):
+    """Add a single product from the main page and verify it appears in the cart."""
+
     prod = add_from_main(driver_on_address, idx=0)
     cart = open_cart(driver_on_address)
     assert_cart_all(cart, [(prod.name, prod.qty, prod.price)])
@@ -18,6 +20,8 @@ def test_add_single_product(driver_on_address):
 @ui
 @cart
 def test_add_two_products(driver_on_address):
+    """Add two different products from the main page and verify both are listed."""
+
     prod1 = add_from_main(driver_on_address, idx=0)
     prod2 = add_from_main(driver_on_address, idx=1)
     cart = open_cart(driver_on_address)
@@ -78,6 +82,8 @@ def test_add_different_products_main_and_details(driver_on_address):
 @ui
 @cart
 def test_add_multiple_products_from_details(driver_on_address):
+    """Add multiple products via the details pages and confirm the cart summary."""
+
     prod1 = add_from_details(driver_on_address, idx=1, qty=2, back_to_main=True)
     prod2 = add_from_details(driver_on_address, idx=2, qty=5, back_to_main=True)
     cart = open_cart(driver_on_address)
@@ -96,7 +102,7 @@ def test_add_multiple_products_from_details(driver_on_address):
         pytest.param(
             int(1e100),
             marks=pytest.mark.xfail(
-                reason="BUG: Input field allows absurdly large quantity (>3 chars), see BUGS.md"
+                reason="BUG no. 7: Input field allows absurdly large quantity (>3 chars)"
             ),
             id="googol",
         ),
@@ -131,7 +137,7 @@ def test_cart_quantity_editable(driver_on_address):
     Currently skipped due to product input field in cart being non-editable.
     """
 
-    pytest.skip(reason="See BUGS.md: Cart Quantity Modification Not Working.")
+    pytest.skip(reason="BUG no. 3: Cart Quantity Modification Not Working.")
     # Example for future implementation (once bug is fixed):
     # prod = add_from_main(driver_on_address, idx=0)
     # cart = open_cart(driver_on_address)
@@ -152,7 +158,7 @@ def test_cart_product_image_redirects_to_details(driver_on_address):
     Currently skipped until feature is implemented.
     """
 
-    pytest.skip("See BUGS.md: Product image in cart does not redirect to details page.")
+    pytest.skip(reason="BUG no. 4: Product image in cart does not redirect to details page.")
 
     # Example for future implementation:
     # prod = add_from_main(driver_on_address, idx=0)
