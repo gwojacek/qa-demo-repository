@@ -1,9 +1,7 @@
 # Changelog
 
-# Changelog
 
-
-## [1.1.0]
+## [1.0.0]
 
 ### Added
 - New tests added with `cart`, `shopping_modal` and `product_details` markers  
@@ -12,7 +10,7 @@
 - Expanded CI to cover those new markers
 
 ### Internal
-- Bumped version to 1.1.0 ;)  
+- Bumped version to 1.0.0 ;)  
 - Docker-compose debug services now set `shm_size` to `2g` (avoids VNC crashes)  
 
 ---
