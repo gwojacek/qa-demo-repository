@@ -199,18 +199,19 @@ This repository uses [Commitizen](https://commitizen-tools.github.io/commitizen/
 
 ### Making commits
 
-Instead of `git commit`, use:  
+- add files by `git add .` for all changes or with specified files.
+
+- instead of `git commit`, use:  
 `poetry run cz commit`
 
-To automatically stage modified files (no need for git add .), append Git's `-a` flag:  
-`poetry run cz commit -- --all`
+- fill up questionare form
 
-**Note:** You still need to `git add` any brand-new files before they'll be included.
+- `git push`
 
 ### Releasing a new version
 
 When you're ready to release:  
-`cz bump`
+`poetry run cz bump`
 
 This command:
 - Analyzes commit history
@@ -218,7 +219,7 @@ This command:
 - Amends `Changelog.md`
 - Creates a Git tag (e.g., `v1.0.1`)
 
-**Important:** Version numbers only change when `cz bump` is executed, not on every commit.
+**Important:** Version numbers only change when `poetry run cz bump` is executed, not on every commit.
 
 ---
 
