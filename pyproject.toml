@@ -63,7 +63,7 @@ known_first_party = "qa_demo_repository"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.2.0"
+version = "1.0.0"
 tag_format = "$version"
 changelog_file = "Changelog.md"
 template = "changelog_template.j2"
