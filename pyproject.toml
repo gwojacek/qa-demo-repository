@@ -68,4 +68,5 @@ tag_format = "v$version"
 changelog_file = "Changelog.md"
 template = "changelog_template.j2"
 update_changelog_on_bump = true
+changelog_incremental    = true
 version_files = ["pyproject.toml:version", "Changelog.md"]

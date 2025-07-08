@@ -6,14 +6,9 @@
 - New page-objects and helpers for advanced UI tests  
 - Expanded CI to cover those new markers
 
-### Fixed
-- **commitizen-tool-changelog-file-fix**: commitizen now uses `Changelog.md` for bumps  
-- **pyproject-commitizen-version-restore**: restored correct `tool.commitizen` version for bump command
-
 ### Internal
-- Bumped version to 1.0.1 ;)  
+- Bumped version to 1.0.0 ;)  
 - Docker-compose debug services now set `shm_size` to `2g` (avoids VNC crashes)  
-- **delete-.cz.toml**: reverted to default commitizen config in `pyproject.toml` so interactive bumps work
 
 ---
 

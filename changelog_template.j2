@@ -8,21 +8,21 @@
 {% for commit in version.change_types['Added'] %}
 - {{ commit.description }}
 {% endfor %}
-{% endif %}
 
+{% endif %}
 {% if version.change_types.get('Fixed') %}
 ### Fixed
 {% for commit in version.change_types['Fixed'] %}
 - {{ commit.description }}
 {% endfor %}
-{% endif %}
 
+{% endif %}
 {% if version.change_types.get('Internal') %}
 ### Internal
 {% for commit in version.change_types['Internal'] %}
 - {{ commit.description }}
 {% endfor %}
-{% endif %}
 
+{% endif %}
 ---
 {% endfor %}
