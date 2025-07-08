@@ -204,7 +204,7 @@
 - Large vertical gaps and uneven layout
 - Visually distracting
 
-![img.png](images/img.png)
+![img.png](images/bugs/img.png)
 
 ### Expected Behavior
 - Clean, even product grid
@@ -244,7 +244,7 @@ commentary text fields (name, email, comments)
 - Field accepts or resets all input, including negative/decimal/giant numbers
 - No visible error for invalid entries
 - Huge numbers break UI  
-  ![img_1.png](images/img_1.png)
+  ![img_1.png](images/bugs/img_1.png)
 
 ### Expected Behavior
 - Input controls enforce frontend and backend validation

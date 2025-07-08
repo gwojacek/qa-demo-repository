@@ -21,6 +21,8 @@ pre-commit = "^4.2.0"
 python-dotenv = "^1.1.0"
 requests = "^2.32.3"
 faker = "^37.3.0"
+commitizen = "^4.8.3"
+
 
 [tool.poetry.scripts]
 lints = "qa_demo_repository.cli:lints"
@@ -36,3 +38,25 @@ markers = [
 ]
 addopts = "--color=yes --capture=tee-sys"
 filterwarnings = "ignore:Unverified HTTPS request.*"
+
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = "qa_demo_repository"

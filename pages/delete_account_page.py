@@ -4,8 +4,11 @@ from selenium.webdriver.common.by import By
 
 from pages.main_page import NavMenu
 from utils.basefunctions import BaseFunctions
-from utils.expected_conditions import (click_element, wait_for_element_visible,
-                                       wait_until_url_is)
+from utils.expected_conditions import (
+    click_element,
+    wait_for_element_visible,
+    wait_until_url_is,
+)
 
 
 class DeleteAccountPage(BaseFunctions):

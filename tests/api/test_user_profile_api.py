@@ -1,8 +1,7 @@
 import logging
 from http import HTTPStatus
 
-from utils.api_requests import (create_account, delete_account,
-                                verify_login_valid)
+from utils.api_requests import create_account, delete_account, verify_login_valid
 from utils.markers import api, usertests
 from utils.payloads import user_create_payload
 

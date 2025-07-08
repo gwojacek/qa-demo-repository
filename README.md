@@ -29,6 +29,12 @@ If you like what you see — hire me!
 Jacek
 
 ---
+
+## License
+
+This project is released under a limited-use license. See the [LICENSE](LICENSE) file for details.
+
+---
 ## Technologies
 
 * **Python 3.12**
@@ -187,6 +193,36 @@ poetry run lints
 ```
 ---
 
+## Commitizen
+
+This repository uses [Commitizen](https://commitizen-tools.github.io/commitizen/) to enforce Conventional Commits and manage release versions. Commit messages are validated via a pre-commit hook.
+
+### Making commits
+
+Instead of `git commit`, use:  
+`poetry run cz commit`
+
+To automatically stage modified files (no need for git add .), append Git's `-a` flag:  
+`poetry run cz commit -- --all`
+
+**Note:** You still need to `git add` any brand-new files before they'll be included.
+
+### Releasing a new version
+
+When you're ready to release:  
+`cz bump`
+
+This command:
+- Analyzes commit history
+- Updates `pyproject.toml`
+- Amends `Changelog.md`
+- Creates a Git tag (e.g., `v1.0.1`)
+
+**Important:** Version numbers only change when `cz bump` is executed, not on every commit.
+
+---
+
+
 ## Test Markers
 
 Markers help categorize tests, making selective execution straightforward during test runs. Example markers defined in
@@ -322,7 +358,9 @@ run_tests.sh
 
   * A `push` to `master`
   * A scheduled CRON job (e.g., nightly)
-  * A manual run via **workflow\_dispatch** (which allows for browser/environment selection)
+  * A manual run via **workflow\_dispatch** (which allows for browser/environment selection). 
+  **Unfortunately only authenticated users with write (push) access can actually start the workflow run**
+  ![img.png](images/Readme/img.png)
 
 ---
 
@@ -376,7 +414,9 @@ run_tests.sh
 
 * Uses [`peaceiris/actions-gh-pages`](https://github.com/peaceiris/actions-gh-pages) to publish the HTML report and screenshots to the `gh-pages` branch.
 * **Result:** Test results are easily browsable at
-  `https://<org>.github.io/<repo>/chrome/<block>/` or `/opera/<block>/`.
+  `https://<org>.github.io/<repo>/chrome/<block>/` or `/opera/<block>/`. 
+   Working example: https://gwojacek.github.io/qa-demo-repository/opera/usertests/
+
 
 #### 8. **Log Report URLs**
 

@@ -13,8 +13,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 from components.consent_popup import ConsentPopup
-from utils.api_requests import (create_account, delete_account,
-                                verify_login_valid)
+from utils.api_requests import create_account, delete_account, verify_login_valid
 from utils.payloads import User, user_create_payload
 
 fake = Faker("pl_PL")

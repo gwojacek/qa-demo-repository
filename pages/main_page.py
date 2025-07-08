@@ -1,9 +1,13 @@
 from selenium.webdriver.common.by import By
 
 from components.modal_shopping import AddToCartModal
-from utils.expected_conditions import (click_element, find_element,
-                                       find_elements, move_to_element,
-                                       wait_for_element_visible)
+from utils.expected_conditions import (
+    click_element,
+    find_element,
+    find_elements,
+    move_to_element,
+    wait_for_element_visible,
+)
 
 
 class MainPage:

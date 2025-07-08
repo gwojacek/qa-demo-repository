@@ -3,9 +3,13 @@ from selenium.webdriver.common.by import By
 from components.consent_popup import ConsentPopup
 from pages.main_page import NavMenu
 from utils.basefunctions import BaseFunctions
-from utils.expected_conditions import (click_element, fill_element,
-                                       is_displayed, wait_for_element,
-                                       wait_for_element_clickable)
+from utils.expected_conditions import (
+    click_element,
+    fill_element,
+    is_displayed,
+    wait_for_element,
+    wait_for_element_clickable,
+)
 
 
 class LoginPage(BaseFunctions):

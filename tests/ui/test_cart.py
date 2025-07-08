@@ -1,9 +1,11 @@
 import pytest
 
-from helper_functions_for_tests.cart_tests_helpers import (add_from_details,
-                                                           add_from_main,
-                                                           assert_cart_all,
-                                                           open_cart)
+from helper_functions_for_tests.cart_tests_helpers import (
+    add_from_details,
+    add_from_main,
+    assert_cart_all,
+    open_cart,
+)
 from utils.markers import cart, ui
 
 
@@ -158,7 +160,9 @@ def test_cart_product_image_redirects_to_details(driver_on_address):
     Currently skipped until feature is implemented.
     """
 
-    pytest.skip(reason="BUG no. 4: Product image in cart does not redirect to details page.")
+    pytest.skip(
+        reason="BUG no. 4: Product image in cart does not redirect to details page."
+    )
 
     # Example for future implementation:
     # prod = add_from_main(driver_on_address, idx=0)

@@ -31,7 +31,9 @@ from utils.markers import product_details, ui
         ),
         pytest.param(
             "  7   ",
-            marks=pytest.mark.xfail(reason="BUG no. 7: accepts padded string as quantity"),
+            marks=pytest.mark.xfail(
+                reason="BUG no. 7: accepts padded string as quantity"
+            ),
             id="whitespace",
         ),
     ],

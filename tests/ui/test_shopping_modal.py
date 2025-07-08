@@ -2,8 +2,11 @@ import time
 
 from components.modal_shopping import AddToCartModal
 from pages.main_page import FeaturesItems, NavMenu
-from utils.expected_conditions import (find_element, move_to_element,
-                                       wait_for_element_clickable)
+from utils.expected_conditions import (
+    find_element,
+    move_to_element,
+    wait_for_element_clickable,
+)
 from utils.markers import shopping_modal, ui, xfail
 
 

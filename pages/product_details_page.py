@@ -1,7 +1,11 @@
 from selenium.webdriver.common.by import By
 
-from utils.expected_conditions import (click_element, fill_element,
-                                       find_element, wait_for_element_visible)
+from utils.expected_conditions import (
+    click_element,
+    fill_element,
+    find_element,
+    wait_for_element_visible,
+)
 
 
 class ProductDetailsPage:

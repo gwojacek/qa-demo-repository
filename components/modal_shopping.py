@@ -1,7 +1,10 @@
 from selenium.webdriver.common.by import By
 
-from utils.expected_conditions import (click_element, wait_for_element_visible,
-                                       wait_for_invisibility)
+from utils.expected_conditions import (
+    click_element,
+    wait_for_element_visible,
+    wait_for_invisibility,
+)
 
 
 class AddToCartModalLocators:
