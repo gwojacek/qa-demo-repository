@@ -5,23 +5,20 @@
 
 ### Feat
 
-- **added-changelog-template**: Try to have consistent changelog entrances look
+- **add-commitizen-for-release-mgmt**: conventional commits , release mgmt
+
+### Docs
+- **readme-license-pyproject**: Add license, update readme, fix linters
 
 ### Fix
-
-- **tag-version-fix**: tag version change in tool commitizen
-- **changelog-template-and-setting**: little fixes to check after push for changelog
-- **tag-version**: fix tag version
 - **incremented-entrances-for-changelog**: now commitizen adds new, dont change earlier entrances in changelog
 - **commitizen-tool-changelog-file-fix**: commitizen uses Changelog.md now for bumps
-- **pyproject-commitizen-version-restore**: restore version of tool.commmitizen for bump command
 
 ### Refactor
 
-- **default-commitizen**: Go back to default commitizen for bumps
 - **delete-.cz.toml**: go back to default commitizen in pyproject, for questions form to work
 
-## [1.1.0]
+## [1.0.0]
 
 ### Added
 - New tests added with `cart`, `shopping_modal` and `product_details` markers  
@@ -30,7 +27,7 @@
 - Expanded CI to cover those new markers
 
 ### Internal
-- Bumped version to 1.1.0 ;)  
+- Bumped version to 1.0.0 ;)  
 - Docker-compose debug services now set `shm_size` to `2g` (avoids VNC crashes)  
 
 ---
