@@ -62,7 +62,7 @@ line_length = 88
 known_first_party = "qa_demo_repository"
 
 [tool.commitizen]
-name = "cz_customize"
+name = "cz_conventional_commits"
 tag_format = "v$version"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:version", "Changelog.md"]
