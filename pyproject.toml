@@ -66,5 +66,6 @@ name = "cz_conventional_commits"
 version = "1.0.0"
 tag_format = "v$version"
 changelog_file = "Changelog.md"
+template = "changelog_template.j2"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:version", "Changelog.md"]
