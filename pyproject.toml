@@ -63,12 +63,10 @@ known_first_party = "qa_demo_repository"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "1.0.0"
+version = "1.1.0"
 tag_format = "$version"
 changelog_file = "Changelog.md"
 template = "changelog_template.j2"
 update_changelog_on_bump = true
 changelog_incremental = true
 version_files = ["pyproject.toml:version", "Changelog.md"]
-changelog_start_rev = "0.1.0"
-keep_a_changelog = true
