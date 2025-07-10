@@ -1,8 +1,10 @@
 name: Bug report
-description: Report a bug with severity level.
+
+description: Report a bug with severity level and detailed description.
 title: '[BUG] '
 labels:
   - bug
+
 body:
   - type: dropdown
     id: severity
@@ -15,24 +17,38 @@ body:
         - **High**: Blocks a key feature or workflow.
         - **Critical**: Prevents release or major data loss.
       options:
-        - Low
-        - Medium
-        - High
-        - Critical
+        - label: Low
+          value: low
+          mapping:
+            labels: ["severity:low"]
+        - label: Medium
+          value: medium
+          mapping:
+            labels: ["severity:medium"]
+        - label: High
+          value: high
+          mapping:
+            labels: ["severity:high"]
+        - label: Critical
+          value: critical
+          mapping:
+            labels: ["severity:critical"]
     validations:
       required: true
 
   - type: textarea
     id: description
     attributes:
-      label: Bug details
-      description: Describe the problem, steps to reproduce, and any helpful links or screenshots.
+      label: Issue Description
+      description: Describe the bug in detail (steps, expected vs. actual behavior, logs, screenshots…).
       placeholder: |
         1. Steps to reproduce…
         2. …
-        
-        **Expected behaviour:**  
+
+        **Expected behavior:**
         …
 
-        **Actual behaviour:**  
+        **Actual behavior:**
         …
+    validations:
+      required: true
