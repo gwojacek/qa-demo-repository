@@ -15,24 +15,18 @@ body:
         - **Low**: Minor issue, doesn’t affect core functionality.
         - **Medium**: Affects functionality in some cases.
         - **High**: Blocks a key feature or workflow.
-        - **Critical**: Prevents release or major data loss.
+        - **Critical**: Prevents release or leads to major data loss.
       options:
-        - label: Low
-          value: low
-          mapping:
-            labels: ["severity:low"]
-        - label: Medium
-          value: medium
-          mapping:
-            labels: ["severity:medium"]
-        - label: High
-          value: high
-          mapping:
-            labels: ["severity:high"]
-        - label: Critical
-          value: critical
-          mapping:
-            labels: ["severity:critical"]
+        - Low
+        - Medium
+        - High
+        - Critical
+    mapping:
+      labels:
+        Low: ["severity:low"]
+        Medium: ["severity:medium"]
+        High: ["severity:high"]
+        Critical: ["severity:critical"]
     validations:
       required: true
 
@@ -40,7 +34,7 @@ body:
     id: description
     attributes:
       label: Issue Description
-      description: Describe the bug in detail (steps, expected vs. actual behavior, logs, screenshots…).
+      description: Describe the bug in detail (steps to reproduce, expected vs. actual behavior, logs, screenshots…).
       placeholder: |
         1. Steps to reproduce…
         2. …
