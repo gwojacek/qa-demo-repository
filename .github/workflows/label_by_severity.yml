@@ -1,0 +1,29 @@
+name: 📌 Label by Severity
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  apply-severity-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract severity from body
+        id: extract
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const body = github.context.payload.issue.body || "";
+            // match "Severity: bug_severity:high" OR
+            //       "Severity\nbug_severity:high"
+            const re = /Severity[:\s]*\r?\n?\*?([^\r\n*]+)\*?/i;
+            const m  = body.match(re);
+            return m ? m[1].trim() : "";
+
+      - name: Add the severity label
+        if: steps.extract.outputs.result != ''
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ steps.extract.outputs.result }}
