@@ -22,10 +22,6 @@ body:
     id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
-      description: |
-        1.  
-        2.  
-        3.
       placeholder: |
         1. Make API call to `/api/verifyLogin` with invalid credentials  
         2. Observe status code  
@@ -74,7 +70,7 @@ body:
     id: severity
     attributes:
       label: Severity
-      description: Select a severity label; it will be applied automatically.
+      description: Select a severity label, but label needs to be put manually
       options:
         - bug_severity:low
         - bug_severity:medium
