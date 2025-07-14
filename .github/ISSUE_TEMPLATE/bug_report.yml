@@ -8,18 +8,21 @@ body:
     attributes:
       value: >
         Thanks for taking the time to file a bug! Please fill out the sections below as completely as possible.
+
   - type: input
     id: short-description
     attributes:
       label: Short Description
-      description: A brief, one‐line summary of the bug.
+      description: A brief, one-line summary of the bug.
       placeholder: Login API returns HTTP 200 on invalid credentials
+    validations:
       required: true
+
   - type: textarea
     id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
-      description: >
+      description: |
         1.  
         2.  
         3.
@@ -27,28 +30,35 @@ body:
         1. Make API call to `/api/verifyLogin` with invalid credentials  
         2. Observe status code  
         3. …
+    validations:
       required: true
+
   - type: textarea
     id: expected-result
     attributes:
       label: Expected Result
       description: What did you expect to happen?
       placeholder: Returns HTTP 401 for invalid credentials
+    validations:
       required: true
+
   - type: textarea
     id: actual-result
     attributes:
       label: Actual Result
       description: What actually happened?
       placeholder: Always returns HTTP 200 with `{"responseCode":404,…}`
+    validations:
       required: true
+
   - type: textarea
     id: workaround
     attributes:
       label: Workaround
       description: Any temporary workaround?
       placeholder: Assert on `responseCode` instead of `.status_code`
-      required: false
+    # no validations block here, since it's optional
+
   - type: textarea
     id: impact
     attributes:
@@ -57,9 +67,11 @@ body:
       placeholder: |
         - Misleads clients about result  
         - Forces clients to parse JSON for errors
+    validations:
       required: true
+
   - type: dropdown
-    id: labels
+    id: severity
     attributes:
       label: Severity
       description: Select a severity label; it will be applied automatically.
@@ -68,4 +80,5 @@ body:
         - bug_severity:medium
         - bug_severity:high
         - bug_severity:blocker
+    validations:
       required: true
