@@ -1,48 +1,71 @@
-name: Bug report
-
-description: Report a bug with severity level and detailed description.
+name: 🐞 Bug Report
+description: Create a detailed bug report with steps, impact, and severity.
 title: '[BUG] '
 labels:
   - bug
-
 body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for taking the time to file a bug! Please fill out the sections below as completely as possible.
+  - type: input
+    id: short-description
+    attributes:
+      label: Short Description
+      description: A brief, one‐line summary of the bug.
+      placeholder: Login API returns HTTP 200 on invalid credentials
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: >
+        1.  
+        2.  
+        3.
+      placeholder: |
+        1. Make API call to `/api/verifyLogin` with invalid credentials  
+        2. Observe status code  
+        3. …
+      required: true
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: Expected Result
+      description: What did you expect to happen?
+      placeholder: Returns HTTP 401 for invalid credentials
+      required: true
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: Actual Result
+      description: What actually happened?
+      placeholder: Always returns HTTP 200 with `{"responseCode":404,…}`
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: Any temporary workaround?
+      placeholder: Assert on `responseCode` instead of `.status_code`
+      required: false
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How does this affect users, tests, or the system?
+      placeholder: |
+        - Misleads clients about result  
+        - Forces clients to parse JSON for errors
+      required: true
   - type: dropdown
-    id: severity
+    id: labels
     attributes:
       label: Severity
-      description: |
-        Choose how critical this bug is:
-        - **Low**: Minor issue, doesn’t affect core functionality.
-        - **Medium**: Affects functionality in some cases.
-        - **High**: Blocks a key feature or workflow.
-        - **Critical**: Prevents release or leads to major data loss.
+      description: Select a severity label; it will be applied automatically.
       options:
-        - Low
-        - Medium
-        - High
-        - Critical
-    mapping:
-      labels:
-        Low: ["severity:low"]
-        Medium: ["severity:medium"]
-        High: ["severity:high"]
-        Critical: ["severity:critical"]
-    validations:
-      required: true
-
-  - type: textarea
-    id: description
-    attributes:
-      label: Issue Description
-      description: Describe the bug in detail (steps to reproduce, expected vs. actual behavior, logs, screenshots…).
-      placeholder: |
-        1. Steps to reproduce…
-        2. …
-
-        **Expected behavior:**
-        …
-
-        **Actual behavior:**
-        …
-    validations:
+        - bug_severity:low
+        - bug_severity:medium
+        - bug_severity:high
+        - bug_severity:blocker
       required: true
