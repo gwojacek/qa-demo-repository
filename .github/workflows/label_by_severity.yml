@@ -7,6 +7,9 @@ on:
 jobs:
   apply-severity-label:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
     steps:
       - name: Extract severity from body
         id: extract
@@ -15,9 +18,9 @@ jobs:
           result-encoding: string
           script: |
             const body = github.context.payload.issue.body || "";
-            // match "Severity: bug_severity:high" OR
-            //       "Severity\nbug_severity:high"
-            const re = /Severity[:\s]*\r?\n?\*?([^\r\n*]+)\*?/i;
+            // Match either "Severity: bug_severity:high" OR
+            //       "Severity\nbug_severity:high" (with optional dash/star)
+            const re = /Severity[:\s]*\r?\n?[-*]?\s*([^\r\n*]+)\*?/i;
             const m  = body.match(re);
             return m ? m[1].trim() : "";
 
