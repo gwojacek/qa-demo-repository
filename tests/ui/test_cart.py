@@ -104,7 +104,7 @@ def test_add_multiple_products_from_details(driver_on_address):
         pytest.param(
             int(1e100),
             marks=pytest.mark.xfail(
-                reason="BUG no. 7: Input field allows absurdly large quantity (>3 chars)"
+                reason="https://github.com/gwojacek/qa-demo-repository/issues/18"
             ),
             id="googol",
         ),
@@ -112,10 +112,6 @@ def test_add_multiple_products_from_details(driver_on_address):
 )
 def test_add_massive_quantity(driver_on_address, qty):
     """
-    [BUG/SECURITY] Product quantity input field does not restrict max length/size.
-
-    See: BUGS.md section 'No Input Restriction on Numeric Fields'
-
     - Only up to 3 numeric characters should be accepted.
     - Values with more than 3 digits (like a googol) should be rejected or trimmed by the input field.
     """
@@ -133,8 +129,7 @@ def test_add_massive_quantity(driver_on_address, qty):
 @cart
 def test_cart_quantity_editable(driver_on_address):
     """
-    [BUG] Cart Quantity Not Editable
-    See: BUGS.md section 'Cart Quantity Modification Not Working'
+    https://github.com/gwojacek/qa-demo-repository/issues/14
 
     Currently skipped due to product input field in cart being non-editable.
     """
@@ -154,15 +149,10 @@ def test_cart_quantity_editable(driver_on_address):
 @cart
 def test_cart_product_image_redirects_to_details(driver_on_address):
     """
-    [UI IMPROVEMENT] Cart product image should link to product details page.
-    See: BUGS.md section 'Product Images Not Clickable'
-
     Currently skipped until feature is implemented.
     """
 
-    pytest.skip(
-        reason="BUG no. 4: Product image in cart does not redirect to details page."
-    )
+    pytest.skip(reason="https://github.com/gwojacek/qa-demo-repository/issues/15")
 
     # Example for future implementation:
     # prod = add_from_main(driver_on_address, idx=0)

@@ -16,11 +16,11 @@ def test_create_delete_account():
     user = user_create_payload()
     req = create_account(user)
     assert req.json().get("responseCode") == HTTPStatus.CREATED
-    # BUG: API returns 200 for deleted users instead of 201 (see BUGS.md no. 1)
+    # BUG: API returns 200 for deleted users instead of 201 (see https://github.com/gwojacek/qa-demo-repository/issues/12)
 
     delete_account(user["email"], user["password"])
     resp = verify_login_valid(user["email"], user["password"])
-    # BUG: API returns 200 for deleted users instead of 404 (see BUGS.md no. 1)
+    # BUG: API returns 200 for deleted users instead of 404 (see https://github.com/gwojacek/qa-demo-repository/issues/12)
     assert resp.json().get("responseCode") == HTTPStatus.NOT_FOUND
 
 

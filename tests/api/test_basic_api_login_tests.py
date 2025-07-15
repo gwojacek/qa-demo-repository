@@ -16,7 +16,7 @@ from utils.markers import api
             "wrongpass",
             HTTPStatus.UNAUTHORIZED,
             marks=pytest.mark.xfail(
-                reason="BUG no. 1: API returns 404 for invalid login instead of 401"
+                reason="https://github.com/gwojacek/qa-demo-repository/issues/12"
             ),
         ),
         (None, "any", HTTPStatus.BAD_REQUEST),
@@ -24,7 +24,8 @@ from utils.markers import api
     ],
 )
 def test_verify_login_cases(email, password, expected_code, user_api):
-    """Verify various login scenarios via the public API."""
+    """Verify various login scenarios via the public API.
+    check out https://github.com/gwojacek/qa-demo-repository/issues/12"""
 
     resp = call_verify_login(email, password, user_api)
     assert resp.json().get("responseCode") == expected_code

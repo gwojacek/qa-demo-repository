@@ -333,8 +333,8 @@ service containers.
 
 ## Bug Tracking
 
-Discovered issues are logged in [BUGS.md](BUGS.md), as a showcase of how I handle bugs - normally I would use Jira.
-Tests are marked `xfail` or `skip` until those bugs are fixed.
+Discovered issues are logged in https://github.com/gwojacek/qa-demo-repository/issues as a showcase of how I handle 
+bugs. Tests are marked `xfail` or `skip` or have comments about the bug until those bugs are fixed by devs.
 
 ---
 ## Visual Summary

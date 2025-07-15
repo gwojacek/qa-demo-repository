@@ -11,12 +11,11 @@ from utils.markers import shopping_modal, ui, xfail
 
 
 @ui
-@xfail(reason="BUG no. 2")
+@xfail(reason="https://github.com/gwojacek/qa-demo-repository/issues/13")
 @shopping_modal
 def test_modal_overlay_click_closes_modal(driver_on_address):
     """
     [UX BUG] Add-to-cart modal cannot be closed by clicking outside popup.
-    See: BUGS.md section 'Modal Blocks UI and Cannot Be Closed by Clicking Outside'
     """
     features = FeaturesItems(driver_on_address)
     features.add_to_cart_by_hover(0, close_modal=False)
@@ -27,7 +26,7 @@ def test_modal_overlay_click_closes_modal(driver_on_address):
 
 
 @ui
-@xfail(reason="BUG no. 5")
+@xfail(reason="https://github.com/gwojacek/qa-demo-repository/issues/16")
 @shopping_modal
 def test_visibility_time_modal(driver_on_address):
     """Ensure the add-to-cart modal appears almost instantly."""

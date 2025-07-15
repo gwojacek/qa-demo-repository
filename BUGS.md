@@ -10,11 +10,6 @@
 1. Make API calls with invalid credentials, or create accounts via `/api/createAccount`
 2. Observe HTTP status code and payload
 
-### Expected Result Examples
-- `/api/verifyLogin` should return:
-    - **HTTP 401** for invalid credentials
-- `/api/createAccount` should return:
-    - **HTTP 201** (Created) on success
 
 ### Actual Result
 - All endpoints always return **HTTP 200** `.status_code`, even for errors.
@@ -26,6 +21,10 @@
 
 ### Expected Behavior
 - All APIs should return **correct HTTP status codes** matching REST/HTTP standards for each outcome.
+- `/api/verifyLogin` should return:
+    - **HTTP 401** for invalid credentials
+- `/api/createAccount` should return:
+    - **HTTP 201** (Created) on success
 
 ### Workaround
 - Automated tests must assert on the `responseCode` in JSON (not `.status_code`).

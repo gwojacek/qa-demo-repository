@@ -13,36 +13,30 @@ from utils.markers import product_details, ui
         pytest.param("abc", id="letters"),
         pytest.param(
             "12abc",
-            marks=pytest.mark.xfail(
-                reason="BUG no. 7: accepts mixed string '12abc' as quantity"
-            ),
+            marks=pytest.mark.xfail(reason="accepts mixed string '12abc' as quantity"),
             id="mixed_string",
         ),
         pytest.param("!", id="symbol"),
         pytest.param(
             "-5",
-            marks=pytest.mark.xfail(reason="BUG no. 7: accepts negative numbers"),
+            marks=pytest.mark.xfail(reason="accepts negative numbers"),
             id="negative",
         ),
         pytest.param(
             "3.5",
-            marks=pytest.mark.xfail(reason="BUG no. 7: accepts float as quantity"),
+            marks=pytest.mark.xfail(reason="accepts float as quantity"),
             id="float",
         ),
         pytest.param(
             "  7   ",
-            marks=pytest.mark.xfail(
-                reason="BUG no. 7: accepts padded string as quantity"
-            ),
+            marks=pytest.mark.xfail(reason="accepts padded string as quantity"),
             id="whitespace",
         ),
     ],
 )
 def test_quantity_non_integer_input_rejected(driver_on_address, qty):
     """
-    [BUG/SECURITY] Product quantity field allows invalid input.
-
-    See: BUGS.md section 'Not enough input Restriction on Numeric and Text Fields'
+    https://github.com/gwojacek/qa-demo-repository/issues/18
 
     Only positive integers should be allowed.
     Non-integer values must NOT be accepted in the input field.

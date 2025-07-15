@@ -19,3 +19,4 @@ def test_delete_account_via_ui_and_verify_api(driver, user_api):
     DeleteAccountPage(driver).delete_account_and_continue()
     resp = verify_login_valid(user_api.email, user_api.password)
     assert resp.json().get("responseCode") == HTTPStatus.NOT_FOUND
+    # BUG: API returns 200 instead of 404 (see https://github.com/gwojacek/qa-demo-repository/issues/12)
