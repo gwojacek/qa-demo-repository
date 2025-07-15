@@ -1,7 +1,26 @@
 # Changelog
 
 
-## 1.1.0 (2025-07-08)
+## 1.2.0 (2025-07-15)
+
+### Feat
+
+- **gh-issues-dropdown-label-connection**: parse the issue body for severity line and call GitHub API to add that label
+- **label-mapping**: add label mapping after using bug severity dropdown
+- **github-issues-dropdown**: new dropdown with bugs severity added to gh issues
+
+### Fix
+
+- **drop-automatic-label**: no native support for dropdown-label link in templates
+- **permission-to-write-labels**: permission to write labels after accepting issue and choosing dropdown option
+- **gh-issues-template**: fixed template syntax for required
+- **gh-issues-template**: Directly uses label names as dropdown options
+
+### Refactor
+
+- **dropown-labeling-gh-issues**: other approach for labelling
+
+## 1.2.0 (2025-07-08)
 
 ### Feat
 
