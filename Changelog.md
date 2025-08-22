@@ -1,5 +1,10 @@
 # Changelog
+## 1.3.0 (2025-08-22)
 
+### Build
+
+- **more_node_max_session**: added node max sessions to chrome and opera services in docker compose to fix 
+                             SessionNotCreatedException
 
 ## 1.2.0 (2025-07-15)
 
