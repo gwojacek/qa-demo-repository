@@ -114,7 +114,7 @@ def driver():
     # Use ChromeOptions for both Chrome and Opera
     opts = ChromeOptions()
     if headless:
-        opts.add_argument("--headless=new")
+        opts.add_argument("--headless")
         opts.add_argument("--disable-dev-shm-usage")
         # Opera-specific tweak for GPU
         if browser == "opera":
