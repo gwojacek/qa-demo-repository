@@ -3,6 +3,9 @@ services:
   selenium-chrome:
     image: selenium/standalone-chrome:latest
     container_name: selenium-chrome
+    environment:
+      SE_NODE_MAX_SESSIONS: "5"
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     ports:
       - "4444:4444"
 
@@ -15,6 +18,8 @@ services:
       SCREEN_WIDTH: 2560
       SCREEN_HEIGHT: 1440
       SCREEN_DEPTH: 24
+      SE_NODE_MAX_SESSIONS: "5"
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     ports:
       - "4445:4444"
       - "5900:5900"
@@ -26,6 +31,8 @@ services:
       - ./tools/operadriver:/usr/local/bin/opera-driver
     environment:
       SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+      SE_NODE_MAX_SESSIONS: "5"
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     ports:
       - "4448:4444"
 
@@ -41,6 +48,8 @@ services:
       SCREEN_HEIGHT: 1440
       SCREEN_DEPTH: 24
       SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
+      SE_NODE_MAX_SESSIONS: "5"
+      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
     ports:
       - "4449:4444"
       - "5902:5900"

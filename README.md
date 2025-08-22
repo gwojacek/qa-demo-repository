@@ -253,6 +253,7 @@ environment).
 * The script runs `docker compose up -d <service>` to start the necessary Selenium service:
 
   * **Chrome:** `selenium-chrome` (headless) or `selenium-chrome-debug` (with VNC).
+  * Chrome and Opera services expose 5 parallel slots to accommodate concurrent test runs.
   * **Opera:** `selenium-opera` or `selenium-opera-debug`.
 * **What happens under the hood?**
 
