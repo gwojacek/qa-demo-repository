@@ -1,7 +1,7 @@
 import time
 from pathlib import Path
 
-from utils.expected_conditions import wait_for_element
+from utils.expected_conditions import EC
 
 
 class BaseFunctions:
@@ -26,7 +26,7 @@ class BaseFunctions:
 
     def scroll_to(self, locator, timeout=None):
         """Scroll to an element located by locator (waits for it first)."""
-        elem = wait_for_element(self.driver, locator, timeout=timeout)
+        elem = EC.wait_for_element(self.driver, locator, timeout=timeout)
         self.driver.execute_script(
             "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", elem
         )

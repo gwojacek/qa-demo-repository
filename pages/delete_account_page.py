@@ -4,11 +4,7 @@ from selenium.webdriver.common.by import By
 
 from pages.main_page import NavMenu
 from utils.basefunctions import BaseFunctions
-from utils.expected_conditions import (
-    click_element,
-    wait_for_element_visible,
-    wait_until_url_is,
-)
+from utils.expected_conditions import EC
 
 
 class DeleteAccountPage(BaseFunctions):
@@ -19,15 +15,15 @@ class DeleteAccountPage(BaseFunctions):
         # Click 'Delete Account' in nav
         NavMenu.click_nav_btn(self.driver, NavMenu.DELETE_ACCOUNT_BTN)
         # Wait for URL to be correct
-        wait_until_url_is(
+        EC.wait_until_url_is(
             self.driver, "https://www.automationexercise.com/delete_account"
         )
         # Assert the header is present and correct
-        elem = wait_for_element_visible(
+        elem = EC.wait_for_element_visible(
             self.driver, DeleteAccountPage.ACCOUNT_DELETED_HEADER
         )
         assert "ACCOUNT DELETED!" == elem.text
         if click:
-            click_element(self.driver, DeleteAccountPage.CONTINUE_BTN)
+            EC.click_element(self.driver, DeleteAccountPage.CONTINUE_BTN)
             # Wait for redirect to home
-            wait_until_url_is(self.driver, os.environ.get("ADDRESS"))
+            EC.wait_until_url_is(self.driver, os.environ.get("ADDRESS"))
