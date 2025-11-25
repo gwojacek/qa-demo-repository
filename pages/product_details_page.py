@@ -1,11 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from utils.expected_conditions import (
-    click_element,
-    fill_element,
-    find_element,
-    wait_for_element_visible,
-)
+from utils.expected_conditions import EC
 
 
 class ProductDetailsPage:
@@ -21,13 +16,13 @@ class ProductDetailsPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.component = wait_for_element_visible(driver, self.COMPONENT)
+        self.component = EC.wait_for_element_visible(driver, self.COMPONENT)
 
     def get_name(self) -> str:
-        return find_element(self.component, self.NAME).text.strip()
+        return EC.find_element(self.component, self.NAME).text.strip()
 
     def get_price(self) -> int:
-        price_text = find_element(self.component, self.PRICE).text.strip()
+        price_text = EC.find_element(self.component, self.PRICE).text.strip()
         return int(price_text.replace("Rs.", "").replace(",", "").strip())
 
     def _get_info_field(self, label: str) -> str:
@@ -52,27 +47,27 @@ class ProductDetailsPage:
         return self._get_info_field("Brand")
 
     def set_quantity(self, qty: int) -> int:
-        fill_element(self.component, self.QUANTITY_INPUT, str(qty), clear_first=True)
+        EC.fill_element(self.component, self.QUANTITY_INPUT, str(qty), clear_first=True)
         return int(
-            find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
+            EC.find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
         )
 
     def fill_input_with_characters(self, qty):
-        fill_element(self.component, self.QUANTITY_INPUT, str(qty), clear_first=True)
-        return find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
+        EC.fill_element(self.component, self.QUANTITY_INPUT, str(qty), clear_first=True)
+        return EC.find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
 
     def get_quantity(self) -> int:
         return int(
-            find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
+            EC.find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
         )
 
     def add_to_cart(self, close_modal=True):
-        click_element(self.component, self.ADD_TO_CART_BTN)
-        wait_for_element_visible(self.driver, self.MODAL)
+        EC.click_element(self.component, self.ADD_TO_CART_BTN)
+        EC.wait_for_element_visible(self.driver, self.MODAL)
         if close_modal:
-            click_element(self.driver, self.CLOSE_MODAL_BTN)
+            EC.click_element(self.driver, self.CLOSE_MODAL_BTN)
 
     def add_to_cart_and_view_cart(self):
-        click_element(self.component, self.ADD_TO_CART_BTN)
-        wait_for_element_visible(self.driver, self.MODAL)
-        click_element(self.driver, self.VIEW_CART_IN_MODAL)
+        EC.click_element(self.component, self.ADD_TO_CART_BTN)
+        EC.wait_for_element_visible(self.driver, self.MODAL)
+        EC.click_element(self.driver, self.VIEW_CART_IN_MODAL)

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from dataclasses import dataclass
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 
-from utils.expected_conditions import find_element, find_elements
+from utils.expected_conditions import EC
 
 
 @dataclass
@@ -19,25 +20,25 @@ class ProductRow:
     DELETE_BTN = (By.CSS_SELECTOR, ".cart_quantity_delete")
 
     def name(self) -> str:
-        return find_element(self.row_element, self.NAME).text.strip()
+        return EC.find_element(self.row_element, self.NAME).text.strip()
 
     def category(self) -> str:
-        return find_element(self.row_element, self.CATEGORY).text.strip()
+        return EC.find_element(self.row_element, self.CATEGORY).text.strip()
 
     def price(self) -> int:
-        txt = find_element(self.row_element, self.PRICE).text
+        txt = EC.find_element(self.row_element, self.PRICE).text
         return int(txt.replace("Rs. ", "").replace(",", "").strip())
 
     def quantity(self) -> int:
-        txt = find_element(self.row_element, self.QUANTITY).text.strip()
+        txt = EC.find_element(self.row_element, self.QUANTITY).text.strip()
         return int(txt)
 
     def total(self) -> int:
-        txt = find_element(self.row_element, self.TOTAL).text
+        txt = EC.find_element(self.row_element, self.TOTAL).text
         return int(txt.replace("Rs. ", "").replace(",", "").strip())
 
     def delete(self):
-        find_element(self.row_element, self.DELETE_BTN).click()
+        EC.find_element(self.row_element, self.DELETE_BTN).click()
 
     def id(self) -> int:
         return int(self.row_element.get_attribute("id").replace("product-", ""))
@@ -47,7 +48,7 @@ class ProductRow:
         """
         Set the quantity in the cart's input field for this product row.
         """
-        input_elem = find_element(
+        input_elem = EC.find_element(
             self.row_element, (By.CSS_SELECTOR, "input[type='number'], input")
         )
         input_elem.clear()
@@ -62,13 +63,15 @@ class CartPage:
     ROWS = (By.CSS_SELECTOR, "tr[id^='product-']")
 
     def _table(self) -> WebElement:
-        return find_element(self.driver, self.TABLE)
+        return EC.find_element(self.driver, self.TABLE)
 
     def _rows(self) -> list[WebElement]:
-        return find_elements(self._table(), self.ROWS)
+        return EC.find_elements(self._table(), self.ROWS)
 
     def get_product_row(self, product_id: int) -> ProductRow:
-        row = find_element(self._table(), (By.CSS_SELECTOR, f"tr#product-{product_id}"))
+        row = EC.find_element(
+            self._table(), (By.CSS_SELECTOR, f"tr#product-{product_id}")
+        )
         return ProductRow(row)
 
     def get_all_rows(self) -> list[ProductRow]:

@@ -1,18 +1,19 @@
-import builtins
-import logging
 import os
-import time
 from http import HTTPStatus
-from pathlib import Path
 
 import pytest
-from dotenv import find_dotenv, load_dotenv
 from faker import Faker
 from pytest_html import extras
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 from components.consent_popup import ConsentPopup
+from tests.conftest_helpers import (
+    configure_print_logging,
+    load_selected_env,
+    make_screenshot_path,
+    restore_print_logging,
+)
 from utils.api_requests import create_account, delete_account, verify_login_valid
 from utils.payloads import User, user_create_payload
 
@@ -24,18 +25,6 @@ logging.basicConfig(
 )
 
 
-def load_selected_env():
-    # ENV_TYPE can be 'local' or 'staging'; default to 'local'
-    env_type = os.environ.get("ENV_TYPE", "local")
-    env_file = f"localconf_{env_type}.env"
-    # Fallback to local if staging not present
-    if not os.path.exists(env_file) and env_type != "local":
-        env_file = "localconf_local.env"
-    load_dotenv(find_dotenv(env_file), override=True)
-    # Nicely formatted info for pytest header
-    return f"\n=======\n[env] Loading environment: {env_file}\n=======\n"
-
-
 # Load env and get the message
 _env_msg = load_selected_env()
 
@@ -44,31 +33,12 @@ def pytest_report_header(config):
     return _env_msg
 
 
-# ---- printing helper -------------------------------------------------------
-_ORIG_PRINT = builtins.print
-
-
-def _print_and_log(*args, **kwargs):
-    """Forward print calls to the logger so they appear with xdist."""
-    msg = " ".join(str(a) for a in args)
-    logging.getLogger("PRINT").info(msg)
-    _ORIG_PRINT(*args, **kwargs)
-
-
 def pytest_configure(config):
-    builtins.print = _print_and_log
+    configure_print_logging()
 
 
 def pytest_unconfigure(config):
-    builtins.print = _ORIG_PRINT
-
-
-def _make_screenshot_path(item):
-    ts = time.strftime("%Y%m%d-%H%M%S")
-    safe = item.nodeid.replace("::", "_").replace("/", "_")
-    path = Path(item.config.rootpath, "tests", "artifacts", f"{ts}_{safe}.png")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    return path
+    restore_print_logging()
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -86,7 +56,7 @@ def pytest_runtest_makereport(item, call):
         return
 
     # Save screenshot
-    p = _make_screenshot_path(item)
+    p = make_screenshot_path(item)
     driver.save_screenshot(str(p))
 
     # Relative path to HTML file
