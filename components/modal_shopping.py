@@ -18,11 +18,15 @@ class AddToCartModal:
 
     def wait_until_visible(self, timeout=5):
         """Wait for modal to be visible."""
-        return EC.wait_for_element_visible(self.driver, AddToCartModalLocators.MODAL, timeout)
+        return EC.wait_for_element_visible(
+            self.driver, AddToCartModalLocators.MODAL, timeout
+        )
 
     def click_continue_shopping(self, timeout=3):
         """Click 'Continue Shopping' button on modal."""
-        EC.click_element(self.driver, AddToCartModalLocators.CONTINUE_SHOPPING_BTN, timeout)
+        EC.click_element(
+            self.driver, AddToCartModalLocators.CONTINUE_SHOPPING_BTN, timeout
+        )
 
     def click_view_cart(self, timeout=3):
         """Click 'View Cart' link in modal."""
@@ -30,4 +34,6 @@ class AddToCartModal:
 
     def wait_until_invisible(self, timeout=5):
         """Wait for modal to be visible."""
-        return EC.wait_for_invisibility(self.driver, AddToCartModalLocators.MODAL, timeout)
+        return EC.wait_for_invisibility(
+            self.driver, AddToCartModalLocators.MODAL, timeout
+        )

@@ -66,4 +66,3 @@ def make_screenshot_path(item) -> Path:
     path = Path(item.config.rootpath, "tests", "artifacts", f"{ts}_{safe}.png")
     path.parent.mkdir(parents=True, exist_ok=True)
     return path
-

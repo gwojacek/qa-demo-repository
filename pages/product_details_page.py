@@ -54,7 +54,9 @@ class ProductDetailsPage:
 
     def fill_input_with_characters(self, qty):
         EC.fill_element(self.component, self.QUANTITY_INPUT, str(qty), clear_first=True)
-        return EC.find_element(self.component, self.QUANTITY_INPUT).get_attribute("value")
+        return EC.find_element(self.component, self.QUANTITY_INPUT).get_attribute(
+            "value"
+        )
 
     def get_quantity(self) -> int:
         return int(

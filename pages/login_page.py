@@ -42,7 +42,9 @@ class LoginPage(BaseFunctions):
 
     def is_logged_in(self):
         EC.wait_for_element_clickable(self.driver, NavMenu.LOGOUT_BTN, timeout=5)
-        EC.wait_for_element_clickable(self.driver, NavMenu.DELETE_ACCOUNT_BTN, timeout=5)
+        EC.wait_for_element_clickable(
+            self.driver, NavMenu.DELETE_ACCOUNT_BTN, timeout=5
+        )
         assert (
             self.current_url().rstrip("/") == "https://www.automationexercise.com"
         ), f"Unexpected URL: {self.current_url()}"

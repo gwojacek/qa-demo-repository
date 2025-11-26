@@ -10,7 +10,7 @@ from typing import Any, List, Optional, Tuple
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as selenium_ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -56,7 +56,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         return WebDriverWait(driver, to).until(
-            EC.presence_of_element_located(locator),
+            selenium_ec.presence_of_element_located(locator),
             f"{locator} did not appear in {to} seconds",
         )
 
@@ -68,7 +68,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         return WebDriverWait(driver, to).until(
-            EC.presence_of_all_elements_located(locator),
+            selenium_ec.presence_of_all_elements_located(locator),
             f"{locator} did not appear in {to} seconds",
         )
 
@@ -80,7 +80,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         return WebDriverWait(driver, to).until(
-            EC.visibility_of_element_located(locator),
+            selenium_ec.visibility_of_element_located(locator),
             f"{locator} is not visible in {to} seconds",
         )
 
@@ -92,7 +92,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         return WebDriverWait(driver, to).until(
-            EC.visibility_of_all_elements_located(locator),
+            selenium_ec.visibility_of_all_elements_located(locator),
             f"{locator} are not visible in {to} seconds",
         )
 
@@ -104,7 +104,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         return WebDriverWait(driver, to).until(
-            EC.element_to_be_clickable(locator),
+            selenium_ec.element_to_be_clickable(locator),
             f"{locator} is not clickable in {to} seconds",
         )
 
@@ -113,7 +113,7 @@ class ExpectedConditions:
         """Wait until a JavaScript alert is present."""
 
         to = cls._resolve_timeout(timeout)
-        return WebDriverWait(driver, to).until(EC.alert_is_present())
+        return WebDriverWait(driver, to).until(selenium_ec.alert_is_present())
 
     @classmethod
     def wait_for_element_to_disappear(
@@ -123,7 +123,9 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         try:
-            WebDriverWait(driver, to).until_not(EC.presence_of_element_located(locator))
+            WebDriverWait(driver, to).until_not(
+                selenium_ec.presence_of_element_located(locator)
+            )
         except TimeoutException:
             raise TimeoutException(f"Element did not disappear within {to} seconds.")
 
@@ -136,7 +138,8 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.url_to_be(url), f"URL did not become {url}, actual: {driver.current_url}"
+            selenium_ec.url_to_be(url),
+            f"URL did not become {url}, actual: {driver.current_url}",
         )
 
     @classmethod
@@ -147,7 +150,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.url_contains(substring),
+            selenium_ec.url_contains(substring),
             f"URL {driver.current_url} did not contain {substring}",
         )
 
@@ -159,7 +162,8 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.title_is(title), f"Title did not become {title}, actual: {driver.title}"
+            selenium_ec.title_is(title),
+            f"Title did not become {title}, actual: {driver.title}",
         )
 
     @classmethod
@@ -170,7 +174,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.title_contains(substring),
+            selenium_ec.title_contains(substring),
             f"Title {driver.title} did not contain {substring}",
         )
 
@@ -187,7 +191,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.text_to_be_present_in_element(locator, text),
+            selenium_ec.text_to_be_present_in_element(locator, text),
             f"{locator} did not appear in {to} seconds or {text} did not match",
         )
 
@@ -203,7 +207,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until_not(
-            EC.text_to_be_present_in_element(locator, text),
+            selenium_ec.text_to_be_present_in_element(locator, text),
             f"{locator} did not disappear in {to} seconds or {text} was still present",
         )
 
@@ -219,7 +223,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.text_to_be_present_in_element_value(locator, text),
+            selenium_ec.text_to_be_present_in_element_value(locator, text),
             f"{locator} did not appear in {to} seconds or {text} did not match",
         )
 
@@ -232,7 +236,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.invisibility_of_element_located(locator),
+            selenium_ec.invisibility_of_element_located(locator),
             f"Element {locator} still visible after {to} seconds",
         )
 
@@ -244,7 +248,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.staleness_of(element),
+            selenium_ec.staleness_of(element),
             f"Element {element} is still attached to the DOM after {to} seconds",
         )
 
@@ -256,7 +260,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.frame_to_be_available_and_switch_to_it(locator),
+            selenium_ec.frame_to_be_available_and_switch_to_it(locator),
             f"Frame {locator} not available in {to} seconds",
         )
 
@@ -269,7 +273,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.new_window_is_opened(old_windows),
+            selenium_ec.new_window_is_opened(old_windows),
             f"No new window was opened in {to} seconds",
         )
 
@@ -281,7 +285,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.number_of_windows_to_be(num),
+            selenium_ec.number_of_windows_to_be(num),
             f"Number of windows did not become {num} in {to} seconds",
         )
 
@@ -298,7 +302,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.element_located_selection_state_to_be(locator, selected),
+            selenium_ec.element_located_selection_state_to_be(locator, selected),
             f"Element {locator} selection state did not become {selected} in {to} seconds",
         )
 
@@ -314,7 +318,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.element_selection_state_to_be(element, selected),
+            selenium_ec.element_selection_state_to_be(element, selected),
             f"Element {element} selection state did not become {selected} in {to} seconds",
         )
 
@@ -326,7 +330,7 @@ class ExpectedConditions:
 
         to = cls._resolve_timeout(timeout)
         WebDriverWait(driver, to).until(
-            EC.element_located_to_be_selected(locator),
+            selenium_ec.element_located_to_be_selected(locator),
             f"Element {locator} was not selected in {to} seconds",
         )
 
@@ -422,10 +426,14 @@ class ExpectedConditions:
         ActionChains(driver).move_to_element(target_elem).perform()
 
         if wait_for_after_move:
-            cls.wait_for_elements_visible(target_elem, wait_for_after_move, wait_timeout)
+            cls.wait_for_elements_visible(
+                target_elem, wait_for_after_move, wait_timeout
+            )
 
     @staticmethod
-    def drag_and_drop(driver: WebDriver, source: WebElement, target: WebElement) -> None:
+    def drag_and_drop(
+        driver: WebDriver, source: WebElement, target: WebElement
+    ) -> None:
         """Drag and drop from source to target."""
 
         ActionChains(driver).drag_and_drop(source, target).perform()
@@ -515,4 +523,3 @@ class ExpectedConditions:
 
 
 EC = ExpectedConditions
-
