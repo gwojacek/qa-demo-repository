@@ -16,6 +16,7 @@ RUN poetry config virtualenvs.create false
 WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --no-interaction
+RUN playwright install --with-deps
 
 # 5. Copy your code in
 COPY . .

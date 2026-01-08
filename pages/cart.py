@@ -1,80 +1,86 @@
 from dataclasses import dataclass
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver, WebElement
-
-from utils.expected_conditions import EC
+from playwright.sync_api import Page, Locator
 
 
 @dataclass
 class ProductRow:
-    row_element: WebElement
+    row_locator: Locator
 
-    # Locators for use with find_element (no asterisks)
-    NAME = (By.CSS_SELECTOR, ".cart_description h4 a")
-    CATEGORY = (By.CSS_SELECTOR, ".cart_description p")
-    PRICE = (By.CSS_SELECTOR, ".cart_price p")
-    QUANTITY = (By.CSS_SELECTOR, ".cart_quantity button")
-    TOTAL = (By.CSS_SELECTOR, ".cart_total_price")
-    DELETE_BTN = (By.CSS_SELECTOR, ".cart_quantity_delete")
+    @property
+    def name_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_description h4 a")
+
+    @property
+    def category_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_description p")
+
+    @property
+    def price_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_price p")
+
+    @property
+    def quantity_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_quantity button")
+
+    @property
+    def total_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_total_price")
+
+    @property
+    def delete_btn_locator(self) -> Locator:
+        return self.row_locator.locator(".cart_quantity_delete")
 
     def name(self) -> str:
-        return EC.find_element(self.row_element, self.NAME).text.strip()
+        return self.name_locator.inner_text().strip()
 
     def category(self) -> str:
-        return EC.find_element(self.row_element, self.CATEGORY).text.strip()
+        return self.category_locator.inner_text().strip()
 
     def price(self) -> int:
-        txt = EC.find_element(self.row_element, self.PRICE).text
+        txt = self.price_locator.inner_text()
         return int(txt.replace("Rs. ", "").replace(",", "").strip())
 
     def quantity(self) -> int:
-        txt = EC.find_element(self.row_element, self.QUANTITY).text.strip()
+        txt = self.quantity_locator.inner_text().strip()
         return int(txt)
 
     def total(self) -> int:
-        txt = EC.find_element(self.row_element, self.TOTAL).text
+        txt = self.total_locator.inner_text()
         return int(txt.replace("Rs. ", "").replace(",", "").strip())
 
     def delete(self):
-        EC.find_element(self.row_element, self.DELETE_BTN).click()
+        self.delete_btn_locator.click()
 
     def id(self) -> int:
-        return int(self.row_element.get_attribute("id").replace("product-", ""))
+        return int(self.row_locator.get_attribute("id").replace("product-", ""))
 
-    # todo wont work, there need to be fixed bug/make an improvement (bug no 3 in bugs.md)
     def set_quantity(self, value: int):
         """
         Set the quantity in the cart's input field for this product row.
         """
-        input_elem = EC.find_element(
-            self.row_element, (By.CSS_SELECTOR, "input[type='number'], input")
-        )
-        input_elem.clear()
-        input_elem.send_keys(str(value))
+        input_elem = self.row_locator.locator("input[type='number'], input")
+        input_elem.fill(str(value))
 
 
 @dataclass
 class CartPage:
-    driver: WebDriver
+    page: Page
 
-    TABLE = (By.CSS_SELECTOR, "table.table.table-condensed")
-    ROWS = (By.CSS_SELECTOR, "tr[id^='product-']")
+    @property
+    def table_locator(self) -> Locator:
+        return self.page.locator("table.table.table-condensed")
 
-    def _table(self) -> WebElement:
-        return EC.find_element(self.driver, self.TABLE)
-
-    def _rows(self) -> list[WebElement]:
-        return EC.find_elements(self._table(), self.ROWS)
+    @property
+    def rows_locator(self) -> Locator:
+        return self.table_locator.locator("tr[id^='product-']")
 
     def get_product_row(self, product_id: int) -> ProductRow:
-        row = EC.find_element(
-            self._table(), (By.CSS_SELECTOR, f"tr#product-{product_id}")
-        )
-        return ProductRow(row)
+        row_locator = self.table_locator.locator(f"tr#product-{product_id}")
+        return ProductRow(row_locator)
 
     def get_all_rows(self) -> list[ProductRow]:
-        return [ProductRow(row) for row in self._rows()]
+        return [ProductRow(row) for row in self.rows_locator.all()]
 
     def get_product_ids(self) -> list[int]:
         return [row.id() for row in self.get_all_rows()]

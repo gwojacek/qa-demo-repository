@@ -1,61 +1,57 @@
-from selenium.webdriver.common.by import By
+from playwright.sync_api import Page, expect
 
 from components.consent_popup import ConsentPopup
 from pages.main_page import NavMenu
-from utils.basefunctions import BaseFunctions
-from utils.expected_conditions import EC
 
 
-class LoginPage(BaseFunctions):
+class LoginPage:
     URL = "https://www.automationexercise.com/login"
 
-    # --- Locators ---
-    # Login form (left)
-    EMAIL_INPUT = (By.CSS_SELECTOR, 'input[data-qa="login-email"]')
-    PASSWORD_INPUT = (By.CSS_SELECTOR, 'input[data-qa="login-password"]')
-    LOGIN_BUTTON = (By.CSS_SELECTOR, 'button[data-qa="login-button"]')
-    LOGIN_FORM = (By.CSS_SELECTOR, 'form[action="/login"]')
+    def __init__(self, page: Page):
+        self.page = page
+        # Login form (left)
+        self.email_input = page.locator('input[data-qa="login-email"]')
+        self.password_input = page.locator('input[data-qa="login-password"]')
+        self.login_button = page.locator('button[data-qa="login-button"]')
+        self.login_form = page.locator('form[action="/login"]')
 
-    # Signup form (right)
-    SIGNUP_NAME_INPUT = (By.CSS_SELECTOR, 'input[data-qa="signup-name"]')
-    SIGNUP_EMAIL_INPUT = (By.CSS_SELECTOR, 'input[data-qa="signup-email"]')
-    SIGNUP_BUTTON = (By.CSS_SELECTOR, 'button[data-qa="signup-button"]')
-    SIGNUP_FORM = (By.CSS_SELECTOR, 'form[action="/signup"]')
+        # Signup form (right)
+        self.signup_name_input = page.locator('input[data-qa="signup-name"]')
+        self.signup_email_input = page.locator('input[data-qa="signup-email"]')
+        self.signup_button = page.locator('button[data-qa="signup-button"]')
+        self.signup_form = page.locator('form[action="/signup"]')
 
     def load(self):
-        self.driver.get(self.URL)
-        ConsentPopup(self.driver).accept()  # Handles the popup if present
-        EC.wait_for_element(self.driver, self.EMAIL_INPUT)
+        self.page.goto(self.URL)
+        ConsentPopup(self.page).accept()  # Handles the popup if present
+        expect(self.email_input).to_be_visible()
 
     def login(self, email, password):
         """Fill login form and submit."""
-        EC.fill_element(self.driver, self.EMAIL_INPUT, email)
-        EC.fill_element(self.driver, self.PASSWORD_INPUT, password)
-        EC.click_element(self.driver, self.LOGIN_BUTTON)
+        self.email_input.fill(email)
+        self.password_input.fill(password)
+        self.login_button.click()
         self.is_logged_in()
 
     def signup(self, name, email):
         """Fill signup form and submit."""
-        EC.fill_element(self.driver, self.SIGNUP_NAME_INPUT, name)
-        EC.fill_element(self.driver, self.SIGNUP_EMAIL_INPUT, email)
-        EC.click_element(self.driver, self.SIGNUP_BUTTON)
+        self.signup_name_input.fill(name)
+        self.signup_email_input.fill(email)
+        self.signup_button.click()
 
     def is_logged_in(self):
-        EC.wait_for_element_clickable(self.driver, NavMenu.LOGOUT_BTN, timeout=5)
-        EC.wait_for_element_clickable(
-            self.driver, NavMenu.DELETE_ACCOUNT_BTN, timeout=5
-        )
-        assert (
-            self.current_url().rstrip("/") == "https://www.automationexercise.com"
-        ), f"Unexpected URL: {self.current_url()}"
+        nav_menu = NavMenu(self.page)
+        expect(nav_menu.logout_btn).to_be_visible(timeout=5000)
+        expect(nav_menu.delete_account_btn).to_be_visible(timeout=5000)
+        expect(self.page).to_have_url("https://www.automationexercise.com/")
 
     def not_logged_in(self):
         """Return True if neither Logout nor Delete Account button is displayed."""
+        nav_menu = NavMenu(self.page)
         return not (
-            EC.is_displayed(self.driver, NavMenu.LOGOUT_BTN)
-            or EC.is_displayed(self.driver, NavMenu.DELETE_ACCOUNT_BTN)
+            nav_menu.logout_btn.is_visible() or nav_menu.delete_account_btn.is_visible()
         )
 
     def logout(self):
-        NavMenu.click_nav_btn(self.driver, NavMenu.LOGOUT_BTN)
-        assert self.current_url() == self.URL, f"Unexpected URL: {self.current_url()}"
+        NavMenu(self.page).logout_btn.click()
+        expect(self.page).to_have_url(self.URL)

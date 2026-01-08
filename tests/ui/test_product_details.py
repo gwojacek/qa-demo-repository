@@ -34,16 +34,16 @@ from utils.markers import product_details, ui
         ),
     ],
 )
-def test_quantity_non_integer_input_rejected(driver_on_address, qty):
+def test_quantity_non_integer_input_rejected(page_on_address, qty):
     """
     https://github.com/gwojacek/qa-demo-repository/issues/18
 
     Only positive integers should be allowed.
     Non-integer values must NOT be accepted in the input field.
     """
-    features = FeaturesItems(driver_on_address)
+    features = FeaturesItems(page_on_address)
     features.view_product(0)
-    details = ProductDetailsPage(driver_on_address)
+    details = ProductDetailsPage(page_on_address)
     val = details.fill_input_with_characters(qty)
 
     assert (

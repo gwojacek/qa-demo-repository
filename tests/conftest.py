@@ -5,8 +5,6 @@ from http import HTTPStatus
 import pytest
 from faker import Faker
 from pytest_html import extras
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 from components.consent_popup import ConsentPopup
 from tests.conftest_helpers import (
@@ -24,7 +22,6 @@ logging.basicConfig(
     format="%(message)s",
     force=True,
 )
-
 
 # Load env and get the message
 _env_msg = load_selected_env()
@@ -52,13 +49,13 @@ def pytest_runtest_makereport(item, call):
     if report.outcome not in ("failed", "skipped"):
         return
 
-    driver = item.funcargs.get("driver")
-    if not driver:
+    page = item.funcargs.get("page")
+    if not page:
         return
 
     # Save screenshot
     p = make_screenshot_path(item)
-    driver.save_screenshot(str(p))
+    page.screenshot(path=p)
 
     # Relative path to HTML file
     html_report_path = item.config.option.htmlpath
@@ -76,38 +73,26 @@ def pytest_runtest_makereport(item, call):
     report.extras = extra
 
 
-@pytest.fixture(scope="class")
-def driver():
-    browser = os.getenv("BROWSER", "chrome").lower()
-    remote = os.getenv("SELENIUM_REMOTE_URL")
-    headless = os.getenv("HEADLESS", "true").lower() in ("1", "true", "yes")
-
-    # Use ChromeOptions for both Chrome and Opera
-    opts = ChromeOptions()
-    if headless:
-        opts.add_argument("--headless")
-        opts.add_argument("--disable-dev-shm-usage")
-        # Opera-specific tweak for GPU
-        if browser == "opera":
-            opts.add_argument("--disable-gpu")
-    opts.add_argument("--no-sandbox")
-    opts.add_argument("--window-size=2560,1440")
-
-    driver = webdriver.Remote(command_executor=remote, options=opts)
-    driver.set_window_size(2560, 1440)
-    yield driver
-    driver.quit()
-
-
-@pytest.fixture(scope="class")
-def driver_on_address(driver):
+@pytest.fixture(scope="function")
+def page_on_address(page):
     address = os.environ.get("ADDRESS")
     if not address:
         raise RuntimeError("ADDRESS env var not set!")
-    driver.get(address)
-    ConsentPopup(driver).accept()  # Handles the popup if present
+    page.goto(address)
+    ConsentPopup(page).accept()  # Handles the popup if present
 
-    yield driver
+    yield page
+
+
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    return {
+        **browser_context_args,
+        "viewport": {
+            "width": 2560,
+            "height": 1440,
+        },
+    }
 
 
 @pytest.fixture(scope="session")

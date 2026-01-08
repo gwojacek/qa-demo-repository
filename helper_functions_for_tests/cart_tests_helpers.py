@@ -1,6 +1,8 @@
 import os
 from dataclasses import dataclass
 
+from playwright.sync_api import Page
+
 from pages.cart import CartPage
 from pages.main_page import FeaturesItems, NavMenu
 from pages.product_details_page import ProductDetailsPage
@@ -14,11 +16,11 @@ class ProductInfo:
     qty: int = 1
 
 
-def add_from_main(driver, idx=0, close_modal=True) -> ProductInfo:
+def add_from_main(page: Page, idx=0, close_modal=True) -> ProductInfo:
     """
     Add a product from main page (FeaturesItems) and return its info.
     """
-    features = FeaturesItems(driver)
+    features = FeaturesItems(page)
     prod_name = features.get_product_name(idx)
     price = features.get_product_price(idx)
     features.add_to_cart_by_hover(index=idx, close_modal=close_modal)
@@ -26,26 +28,26 @@ def add_from_main(driver, idx=0, close_modal=True) -> ProductInfo:
 
 
 def add_from_details(
-    driver, idx=0, qty=1, close_modal=True, back_to_main=False
+    page: Page, idx=0, qty=1, close_modal=True, back_to_main=False
 ) -> ProductInfo:
     """
     Add product from details page with given quantity, return its info.
     """
-    features = FeaturesItems(driver)
+    features = FeaturesItems(page)
     features.view_product(idx)
-    details = ProductDetailsPage(driver)
+    details = ProductDetailsPage(page)
     details.set_quantity(qty)
     prod_name = details.get_name()
     price = details.get_price()
     details.add_to_cart(close_modal=close_modal)
     if back_to_main:
-        driver.get(os.environ.get("ADDRESS"))
+        page.goto(os.environ.get("ADDRESS"))
     return ProductInfo(name=prod_name, price=price, idx=idx, qty=qty)
 
 
-def open_cart(driver):
-    NavMenu.click_nav_btn(driver, NavMenu.CART_BTN)
-    return CartPage(driver)
+def open_cart(page: Page) -> CartPage:
+    NavMenu(page).cart_btn.click()
+    return CartPage(page)
 
 
 # Assertions

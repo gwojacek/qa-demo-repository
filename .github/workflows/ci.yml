@@ -16,7 +16,7 @@ on:
         required: false
         default: 'all'
         type: choice
-        options: [all, chrome, opera]
+        options: [all, chromium, firefox, webkit]
       env_type:
         description: 'Test environment'
         required: false
@@ -29,18 +29,13 @@ env:
   ENV_TYPE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env_type || 'local' }}
 
 jobs:
-
-  # ---- Chrome tests ----
-  tests-chrome:
-    name: ${{ matrix.testblock }} (Chrome)
+  tests:
+    name: ${{ matrix.testblock }} (${{ matrix.browser }})
     runs-on: ubuntu-latest
-    if: |
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.browser == 'all' ||
-      github.event.inputs.browser == 'chrome'
     strategy:
       fail-fast: false
       matrix:
+        browser: [chromium, firefox, webkit]
         testblock:
           - ui
           - api
@@ -48,6 +43,12 @@ jobs:
           - cart
           - shopping_modal
           - product_details
+        exclude:
+          # API tests are browser-agnostic, so run them only once
+          - browser: firefox
+            testblock: api
+          - browser: webkit
+            testblock: api
 
     steps:
       - name: Checkout
@@ -70,116 +71,42 @@ jobs:
 
       - name: Show test context
         run: |
-          echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: chrome"
+          echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: ${{ matrix.browser }}"
 
-      - name: Run ${{ matrix.testblock }} tests (Chrome)
-        run: ./run_tests.sh -b chrome -m ${{ matrix.testblock }} -e $ENV_TYPE
+      - name: Run ${{ matrix.testblock }} tests
+        run: ./run_tests.sh -b ${{ matrix.browser }} -m ${{ matrix.testblock }} -e $ENV_TYPE
 
-      - name: Prepare report for GitHub Pages (Chrome)
+      - name: Prepare report for GitHub Pages
         if: always()
         run: |
-          DIR=out/chrome/${{ matrix.testblock }}
+          DIR=out/${{ matrix.browser }}/${{ matrix.testblock }}
           mkdir -p "$DIR"
           cp tests/artifacts/report.html "$DIR/index.html"
           if ls tests/artifacts/*.png >/dev/null 2>&1; then
             cp tests/artifacts/*.png "$DIR/"
           fi
 
-      - name: Upload Chrome report artifact
+      - name: Upload report artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: chrome-${{ matrix.testblock }}-report
+          name: ${{ matrix.browser }}-${{ matrix.testblock }}-report
           path: out
 
-
-      - name: Show report URL (Chrome)
+      - name: Show report URL
         if: always()
         run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/chrome/${{ matrix.testblock }}/"
+          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ matrix.browser }}/${{ matrix.testblock }}/"
 
       - name: Add environment info to workflow summary
         if: always()
         run: |
-          echo "#### [${{ matrix.testblock }} (Chrome)] Environment: \`${ENV_TYPE}\`" >> $GITHUB_STEP_SUMMARY
-
-  # ---- Opera tests ----
-  tests-opera:
-    name: ${{ matrix.testblock }} (Opera)
-    runs-on: ubuntu-latest
-    if: |
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.browser == 'all' ||
-      github.event.inputs.browser == 'opera'
-    strategy:
-      fail-fast: false
-      matrix:
-        testblock:
-          - ui
-          - api
-          - usertests
-          - cart
-          - shopping_modal
-          - product_details
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          clean: false
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
-      - name: Prepare environment file
-        run: |
-          if [ "${ENV_TYPE}" = "staging" ]; then
-            echo "${{ secrets.LOCALCONF_STAGING_ENV }}" > localconf_staging.env
-          else
-            echo "${{ secrets.LOCALCONF_LOCAL_ENV }}" > localconf_local.env
-          fi
-
-      - name: Show test context
-        run: |
-          echo "Running on ${{ matrix.testblock }} | Environment: $ENV_TYPE | Browser: opera"
-
-      - name: Run ${{ matrix.testblock }} tests (Opera)
-        run: ./run_tests.sh -b opera -m ${{ matrix.testblock }} -e $ENV_TYPE
-
-      - name: Prepare report for GitHub Pages (Opera)
-        if: always()
-        run: |
-          DIR=out/opera/${{ matrix.testblock }}
-          mkdir -p "$DIR"
-          cp tests/artifacts/report.html "$DIR/index.html"
-          if ls tests/artifacts/*.png >/dev/null 2>&1; then
-            cp tests/artifacts/*.png "$DIR/"
-          fi
-
-      - name: Upload Opera report artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: opera-${{ matrix.testblock }}-report
-          path: out
-
-
-      - name: Show report URL (Opera)
-        if: always()
-        run: |
-          echo "::notice title=Report URL::https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/opera/${{ matrix.testblock }}/"
-
-      - name: Add environment info to workflow summary
-        if: always()
-        run: |
-          echo "#### [${{ matrix.testblock }} (Opera)] Environment: \`${ENV_TYPE}\`" >> $GITHUB_STEP_SUMMARY
+          echo "#### [${{ matrix.testblock }} (${{ matrix.browser }})] Environment: \`${ENV_TYPE}\`" >> $GITHUB_STEP_SUMMARY
 
   publish-reports:
     name: Publish all reports to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [tests-chrome, tests-opera]
+    needs: [tests]
     if: always()
     steps:
       - name: Download artifacts
@@ -187,7 +114,6 @@ jobs:
         with:
           path: out
           merge-multiple: true
-
 
       - name: Publish HTML reports
         uses: peaceiris/actions-gh-pages@v4

@@ -1,68 +1,7 @@
 # docker-compose.yml
 services:
-  selenium-chrome:
-    image: selenium/standalone-chrome:latest
-    container_name: selenium-chrome
-    shm_size: 2g
-    environment:
-      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
-      SE_NODE_MAX_SESSIONS: "4"
-    ports:
-      - "4444:4444"
-
-  selenium-chrome-debug:
-    image: selenium/standalone-chrome-debug:latest
-    container_name: selenium-chrome-debug
-    shm_size: 2g
-    environment:
-      VNC_NO_PASSWORD: "1"
-      SCREEN_WIDTH: 2560
-      SCREEN_HEIGHT: 1440
-      SCREEN_DEPTH: 24
-      SE_NODE_MAX_SESSIONS: "4"
-      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
-    ports:
-      - "4445:4444"
-      - "5900:5900"
-
-  selenium-opera:
-    image: selenium/standalone-chrome:latest
-    container_name: selenium-opera
-    volumes:
-      - ./tools/operadriver:/usr/local/bin/opera-driver
-    shm_size: 2g
-    environment:
-      SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-      SE_NODE_MAX_SESSIONS: "4"
-      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
-    ports:
-      - "4448:4444"
-
-  selenium-opera-debug:
-    image: selenium/standalone-chrome-debug:latest
-    container_name: selenium-opera-debug
-    shm_size: 2g
-    volumes:
-      - ./tools/operadriver:/usr/local/bin/opera-driver
-    environment:
-      VNC_NO_PASSWORD: "1"
-      SCREEN_WIDTH: 2560
-      SCREEN_HEIGHT: 1440
-      SCREEN_DEPTH: 24
-      SE_OPERA_DRIVER_EXECUTABLE: /usr/local/bin/opera-driver
-      SE_NODE_MAX_SESSIONS: "4"
-      SE_NODE_OVERRIDE_MAX_SESSIONS: "true"
-    ports:
-      - "4449:4444"
-      - "5902:5900"
-
   test-runner:
     build: .
-    depends_on:
-      - selenium-chrome
-      - selenium-chrome-debug
-      - selenium-opera
-      - selenium-opera-debug
     environment:
       PYTHONPATH: /app
     volumes:
