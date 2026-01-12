@@ -8,26 +8,29 @@ BROWSER="chrome"   # supports: chrome | opera
 MARKER=""
 WORKERS="auto"
 HEADLESS=true
+RERUNS=1
 VNC=false
 VNC_PID=""
 ENV_TYPE="local"
 
 usage(){ cat <<EOF >&2
-Usage: $0 [-b chrome|opera] [-m <marker>] [-n <workers>] [-H] [-v] [-e <env_type>]
+Usage: $0 [-b chrome|opera] [-m <marker>] [-n <workers>] [-r <reruns>] [-H] [-v] [-e <env_type>]
   -b    browser (chrome|opera), default=chrome
   -m    pytest marker
   -n    xdist workers, default=auto
+  -r    reruns, default=1
   -H    disable headless
   -v    VNC mode (also disables headless & forces workers=1)
   -e    environment type (local|staging), default=local
 EOF
 exit 1; }
 
-while getopts "b:m:n:He:v" opt; do
+while getopts "b:m:n:r:He:v" opt; do
   case $opt in
     b) BROWSER="$OPTARG" ;;
     m) MARKER="$OPTARG" ;;
     n) WORKERS="$OPTARG" ;;
+    r) RERUNS="$OPTARG" ;;
     H) HEADLESS=false ;;
     v) VNC=true; HEADLESS=false; WORKERS=1 ;;
     e) ENV_TYPE="$OPTARG" ;;
@@ -98,9 +101,9 @@ docker compose build test-runner
 
 PYTEST_ARGS=(-v --color=yes)
 [ -n "$MARKER" ] && PYTEST_ARGS+=( -m "$MARKER" )
-PYTEST_ARGS+=( -n "$WORKERS" --html=tests/artifacts/report.html --self-contained-html )
+PYTEST_ARGS+=( -n "$WORKERS" --reruns "$RERUNS" --html=tests/artifacts/report.html --self-contained-html )
 
-echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS, env=$ENV_TYPE)…"
+echo "🧪 Running pytest ($BROWSER, headless=$HEADLESS, VNC=$VNC, workers=$WORKERS, reruns=$RERUNS, env=$ENV_TYPE)…"
 docker compose run --rm --no-deps \
   -e BROWSER="$BROWSER" \
   -e HEADLESS="$HEADLESS" \
